@@ -43,10 +43,10 @@ public class IndividualResourceController extends AbstractController {
         ResponseEntity<byte[]> responseEntity;
         Path imagePath = storageService.load((long) userId);
         if (!imagePath.toFile().exists()) {
-            LOGGER.debug("File {} not found", imagePath.toString());
+            LOGGER.info("File {} not found", imagePath.toString());
             throw new ImageNotFoundException("Данный файл отсутствует");
         }
-        LOGGER.debug("File path {} loaded", imagePath.toString());
+        LOGGER.info("File path {} loaded", imagePath.toString());
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
         String mimeType = fileTypeMap.getContentType(imagePath.toFile());

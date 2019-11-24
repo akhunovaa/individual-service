@@ -87,13 +87,13 @@ public class StorageServiceImpl implements StorageService {
     public Path load(long userId) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;
-        LOGGER.debug("User path location directory {}", usersPathLocation);
+        LOGGER.info("User path location directory {}", usersPathLocation);
         String[] files = FileUtils.getFile(new File(usersPathLocation)).exists() ? FileUtils.getFile(new File(usersPathLocation)).list() : new String[]{"empty"};
         File imageFile = null;
         for (String file : files) {
             imageFile = FileUtils.getFile(new File(usersPathLocation), file);
         }
-        LOGGER.debug("User file {} in  directory {}", imageFile.getName(), usersPathLocation);
+        LOGGER.info("User file {} in  directory {}", imageFile.getName(), usersPathLocation);
         return imageFile.toPath();
     }
 

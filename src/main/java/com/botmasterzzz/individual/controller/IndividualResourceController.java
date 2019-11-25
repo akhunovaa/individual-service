@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RestController
@@ -42,7 +43,7 @@ public class IndividualResourceController extends AbstractController {
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<byte[]> responseEntity;
         Path imagePath = storageService.load((long) userId);
-        if (!imagePath.toFile().exists()) {
+        if (Files.notExists(imagePath)) {
             LOGGER.info("File {} not found", imagePath.toString());
             throw new ImageNotFoundException("Данный файл отсутствует");
         }

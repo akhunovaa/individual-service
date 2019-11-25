@@ -7,10 +7,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ImageNotFoundException extends RuntimeException {
 
     private String message;
+    private String fileLocation;
 
     public ImageNotFoundException(String message) {
         super(message);
         this.message = message;
+    }
+
+    public ImageNotFoundException(String message, String fileLocation) {
+        super(message);
+        this.message = message;
+        this.message = fileLocation;
     }
 
     @Override

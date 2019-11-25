@@ -88,7 +88,7 @@ public class StorageServiceImpl implements StorageService {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;
         LOGGER.info("User path location directory {}", usersPathLocation);
-        String[] files = FileUtils.getFile(new File(usersPathLocation)).exists() ? FileUtils.getFile(new File(usersPathLocation)).list() : new String[]{"empty"};
+        String[] files = FileUtils.getFile(new File(usersPathLocation)).exists() ? FileUtils.getFile(new File(usersPathLocation)).list() : new String[]{"image.jpeg"};
         File imageFile = null;
         for (String file : files) {
             imageFile = FileUtils.getFile(new File(usersPathLocation), file);

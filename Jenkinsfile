@@ -57,7 +57,7 @@ pipeline {
                 }
                 sh "docker container ls -a -f name=botmasterzzz-individual -q | xargs --no-run-if-empty docker container stop"
                 sh 'docker container ls -a -f name=botmasterzzz-individual -q | xargs -r docker container rm'
-                sh 'docker run -v /etc/localtime:/etc/localtime --name botmasterzzz-individual -d --net=botmasterzzznetwork -p 127.0.0.1:7000:7000 --restart always leon4uk/botmasterzzz-individual:1.0.0'
+                sh 'docker run -v /home/repository:/home/repository -v /etc/localtime:/etc/localtime --name botmasterzzz-individual -d --net=botmasterzzznetwork -p 127.0.0.1:7000:7000 --restart always leon4uk/botmasterzzz-individual:1.0.0'
             }
         }
 

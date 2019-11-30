@@ -27,6 +27,9 @@ public class UserServiceImpl implements UserService {
     @Value(value = "${user.topic.name}")
     private String userTopicName;
 
+    @Value(value = "${user.password.topic.name}")
+    private String userPasswordTopicName;
+
     @Override
     public UserDTO save(UserDTO userDTO) {
         return null;
@@ -43,6 +46,13 @@ public class UserServiceImpl implements UserService {
     public void userPictureUrlUpdate(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
         kafkaTemplate.send(userTopicName, userDTO);
+    }
+
+    @Override
+    @Async
+    public void userPasswordUpdate(UserDTO userDTO) {
+        LOGGER.info("<= sending {}", writeValueAsString(userDTO));
+        kafkaTemplate.send(userPasswordTopicName, userDTO);
     }
 
     @Override

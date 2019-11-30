@@ -21,9 +21,6 @@ public class KafkaProducerConfig {
     @Value("${kafka.server}")
     private String kafkaServer;
 
-    @Value(value = "${user.topic.name}")
-    private String topicName;
-
     @Bean
     public ProducerFactory<Long, AbstractDto> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();

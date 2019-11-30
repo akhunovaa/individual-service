@@ -1,7 +1,6 @@
 package com.botmasterzzz.individual.config;
 
 import com.botmasterzzz.individual.dto.AbstractDto;
-import com.botmasterzzz.individual.dto.UserDTO;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;

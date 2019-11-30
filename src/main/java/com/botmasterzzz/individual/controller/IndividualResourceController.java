@@ -82,10 +82,10 @@ public class IndividualResourceController extends AbstractController {
     public Response userImageUpload(@RequestParam("file") MultipartFile file) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
-        String requestUrl = "https://botmasterzzz.com/individual/";
+        String requestUrl = "https://botmasterzzz.com/users";
         imageValidatorService.validate(file);
         storageService.storeMainImage(file, userPrincipal.getId());
-        String imageUrl = requestUrl + "user/" + userPrincipal.getId() + "/image";
+        String imageUrl = requestUrl + "/image/" + userPrincipal.getId();
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(userPrincipal.getId());
         imageDTO.setImageUrl(imageUrl);
@@ -93,8 +93,8 @@ public class IndividualResourceController extends AbstractController {
         userDTO.setLogin(userPrincipal.getLogin());
         userDTO.setEmail(userPrincipal.getEmail());
         userDTO.setId(userPrincipal.getId());
-        userService.send(userDTO);
-        //securityUserService.userImageUrlUpdate(imageDTO);
+        userDTO.setImageUrl(imageUrl);
+        userService.userPictureUrlUpdate(userDTO);
         return getResponseDto(imageDTO);
     }
 }

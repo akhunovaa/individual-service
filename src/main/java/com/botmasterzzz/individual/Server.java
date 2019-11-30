@@ -23,7 +23,7 @@ public class Server {
         tomcat = new Tomcat();
         tomcat.setPort(port);
         tomcat.setBaseDir(System.getProperty("java.io.tmpdir"));
-        tomcat.addWebapp("/individual", System.getProperty("java.io.tmpdir"));
+        tomcat.addWebapp("/users", System.getProperty("java.io.tmpdir"));
     }
 
 

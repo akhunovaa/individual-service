@@ -36,6 +36,12 @@ public class UserServiceImpl implements UserService {
     @Async
     public void send(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
+    }
+
+    @Override
+    @Async
+    public void userPictureUrlUpdate(UserDTO userDTO) {
+        LOGGER.info("<= sending {}", writeValueAsString(userDTO));
         kafkaTemplate.send(userTopicName, userDTO);
     }
 

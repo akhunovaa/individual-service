@@ -13,4 +13,6 @@ public interface UserService {
     void userPictureUrlUpdate(UserDTO userDTO);
 
     void userPasswordUpdate(UserDTO userDTO);
+
+    UserDTO findUser(Long id);
 }

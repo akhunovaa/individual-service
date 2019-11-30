@@ -11,10 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class IndividualController extends AbstractController {
@@ -23,6 +22,17 @@ public class IndividualController extends AbstractController {
 
     @Autowired
     private UserService userService;
+
+    @RequestMapping(value = "/info", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("authenticated")
+    public Response userPasswordUpdate(@RequestParam(name = "id") Long userId) throws ExecutionException, InterruptedException {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
+        LOGGER.info("User info invoking request came from login: {} and id: {}", userPrincipal.getLogin(), userPrincipal.getId());
+        UserDTO userDTO = userService.findUser(userId);
+        LOGGER.info("User info data came with a login: {} and id: {}", userDTO.getLogin(), userDTO.getId());
+        return getResponseDto(userDTO);
+    }
 
     @RequestMapping(value = "/password",
             method = RequestMethod.POST,

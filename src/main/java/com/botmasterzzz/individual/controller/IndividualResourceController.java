@@ -82,7 +82,7 @@ public class IndividualResourceController extends AbstractController {
     public Response userImageUpload(@RequestParam("file") MultipartFile file) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
-        String requestUrl = "https://botmasterzzz.com/individual";
+        String requestUrl = "https://yourapi.ru/individual";
         imageValidatorService.validate(file);
         storageService.storeMainImage(file, userPrincipal.getId());
         String imageUrl = requestUrl + "/image/" + userPrincipal.getId();

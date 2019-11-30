@@ -1,11 +1,13 @@
 package com.botmasterzzz.individual.controller;
 
 import com.botmasterzzz.individual.dto.ImageDTO;
+import com.botmasterzzz.individual.dto.UserDTO;
 import com.botmasterzzz.individual.dto.UserPrincipal;
 import com.botmasterzzz.individual.exception.ImageNotFoundException;
 import com.botmasterzzz.individual.model.Response;
 import com.botmasterzzz.individual.service.ImageValidatorService;
 import com.botmasterzzz.individual.service.StorageService;
+import com.botmasterzzz.individual.service.UserService;
 import com.botmasterzzz.individual.util.ImageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,9 @@ public class IndividualResourceController extends AbstractController {
 
     @Autowired
     private StorageService storageService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ImageValidatorService imageValidatorService;
@@ -84,6 +89,11 @@ public class IndividualResourceController extends AbstractController {
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(userPrincipal.getId());
         imageDTO.setImageUrl(imageUrl);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setLogin(userPrincipal.getLogin());
+        userDTO.setEmail(userPrincipal.getEmail());
+        userDTO.setId(userPrincipal.getId());
+        userService.send(userDTO);
         //securityUserService.userImageUrlUpdate(imageDTO);
         return getResponseDto(imageDTO);
     }

@@ -42,7 +42,6 @@ public class IndividualResourceController extends AbstractController {
     @Autowired
     private ImageValidatorService imageValidatorService;
 
-    @PreAuthorize("authenticated")
     @RequestMapping(value = "/image/{userId}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> userImageGet(@PathVariable int userId) {
         HttpHeaders headers = new HttpHeaders();

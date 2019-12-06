@@ -16,15 +16,11 @@ public class ImageValidatorServiceImpl implements ImageValidatorService {
     public void validate(MultipartFile target) {
         MultipartFile file = target;
 
-        if(file.isEmpty()){
+        if (file.isEmpty()) {
             throw new ImageValidationException("Загружаемый файл не должен быть пустым");
-        }
-
-        else if(file.getSize() > TEN_MB_IN_BYTES){
+        } else if (file.getSize() > TEN_MB_IN_BYTES) {
             throw new ImageValidationException("Загружаемый размер файла первышает допустимые нормы");
-        }
-
-        else if(!PNG_MIME_TYPE.equalsIgnoreCase(file.getContentType()) && !JPEG_MIME_TYPE.equalsIgnoreCase(file.getContentType())){
+        } else if (!PNG_MIME_TYPE.equalsIgnoreCase(file.getContentType()) && !JPEG_MIME_TYPE.equalsIgnoreCase(file.getContentType())) {
             throw new ImageValidationException("Загружаемый файл не соответствует допустимым нормам");
         }
     }

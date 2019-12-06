@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "username",
         "email"
 })
-public class User extends AbstractDto{
+public class User extends AbstractDto {
 
     public User() {
     }

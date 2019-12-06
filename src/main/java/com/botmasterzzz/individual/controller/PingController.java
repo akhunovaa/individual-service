@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-public class PingController extends AbstractController{
+public class PingController extends AbstractController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PingController.class);
 

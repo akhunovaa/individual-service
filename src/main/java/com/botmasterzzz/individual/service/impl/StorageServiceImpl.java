@@ -53,14 +53,14 @@ public class StorageServiceImpl implements StorageService {
         File fileJpg = new File(usersPathLocation + "/" + "image." + "jpg");
         File fileJpeg = new File(usersPathLocation + "/" + "image." + "jpeg");
         File filePng = new File(usersPathLocation + "/" + "image." + "png");
-        if (fileJpg.exists()){
-         FileUtils.deleteQuietly(fileJpg);
+        if (fileJpg.exists()) {
+            FileUtils.deleteQuietly(fileJpg);
         }
-        if (filePng.exists()){
-         FileUtils.deleteQuietly(filePng);
+        if (filePng.exists()) {
+            FileUtils.deleteQuietly(filePng);
         }
-        if (fileJpeg.exists()){
-         FileUtils.deleteQuietly(fileJpeg);
+        if (fileJpeg.exists()) {
+            FileUtils.deleteQuietly(fileJpeg);
         }
         if (!file.isEmpty()) {
             try {

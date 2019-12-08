@@ -66,8 +66,8 @@ public class IndividualResourceController extends AbstractController {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             img = ImageIO.read(new FileInputStream(imagePath.toFile()));
-            BufferedImage resized = ImageUtil.resize(img, 300, 300);
-            ImageIO.write(resized, "jpg", bos);
+//            BufferedImage resized = ImageUtil.resize(img, 300, 300);
+            ImageIO.write(img, "jpg", bos);
         } catch (IOException e) {
             LOGGER.error("Error occurs during writing {}", imagePath.toString(), e);
         }

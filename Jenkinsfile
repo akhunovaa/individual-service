@@ -1,4 +1,14 @@
 pipeline {
+
+    environment {
+        dockerImageName = "botmasterzzz-individual"
+        registryUrl = "https://rusberbank.ru"
+        registry = "rusberbank.ru/${dockerImageName}"
+        registryCredential = "ourHubPwd"
+        dockerExternalPort = "127.0.0.1:7000"
+        dockerInternalPort = "7000"
+    }
+
     agent any
 
     stages {
@@ -33,33 +43,48 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo 'Build Docker Image'
-                sh 'docker build --no-cache -t leon4uk/botmasterzzz-individual:1.0.0 .'
+                echo "Building image: $registry:$BUILD_NUMBER"
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
             }
         }
 
-        stage('Push Docker image') {
+        stage('Push Docker Image') {
             steps {
-                echo 'Push Docker image'
-                withCredentials([string(credentialsId: 'dockerHubPwd', variable: 'dockerHubPwd')]) {
-                    sh "docker login -u leon4uk -p ${dockerHubPwd}"
+                echo "Pushing image: $registry:$BUILD_NUMBER"
+                script {
+                    docker.withRegistry(registryUrl, registryCredential) {
+                        dockerImage.push()
+                    }
+
                 }
-                sh 'docker push leon4uk/botmasterzzz-individual:1.0.0'
-                sh 'docker rmi leon4uk/botmasterzzz-individual:1.0.0'
+            }
+        }
+
+        stage('Remove Unused Docker Image') {
+            steps {
+                echo "Removing image: $registry:$BUILD_NUMBER"
+                sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
 
         stage('Deploy') {
             steps {
                 echo '## Deploy locally ##'
-                withCredentials([string(credentialsId: 'dockerHubPwd', variable: 'dockerHubPwd')]) {
-                    sh "docker login -u leon4uk -p ${dockerHubPwd}"
+                echo "Stopping docker container: $dockerImageName"
+                sh "docker container ls -a -f name=$dockerImageName -q | xargs --no-run-if-empty docker container stop"
+                echo "Removing docker container: $dockerImageName"
+                sh "docker container ls -a -f name=$dockerImageName -q | xargs -r docker container rm"
+                echo "Running docker image: $registry:$BUILD_NUMBER"
+                script {
+                    docker.withRegistry(registryUrl, registryCredential) {
+                        sh "docker run -v /etc/localtime:/etc/localtime --name $dockerImageName -d --net=botmasterzzznetwork -p $dockerExternalPort:$dockerInternalPort --restart always $registry:$BUILD_NUMBER"
+                    }
                 }
-                sh "docker container ls -a -f name=botmasterzzz-individual -q | xargs --no-run-if-empty docker container stop"
-                sh 'docker container ls -a -f name=botmasterzzz-individual -q | xargs -r docker container rm'
-                sh 'docker run -v /home/repository:/home/repository -v /etc/localtime:/etc/localtime --name botmasterzzz-individual -d --net=botmasterzzznetwork -p 127.0.0.1:7000:7000 --restart always leon4uk/botmasterzzz-individual:1.0.0'
+                sh 'printenv'
             }
-        }
 
+        }
     }
 }

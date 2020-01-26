@@ -63,13 +63,22 @@ public class StorageServiceImpl implements StorageService {
             FileUtils.deleteQuietly(fileJpeg);
         }
         if (!file.isEmpty()) {
+            BufferedOutputStream stream = null;
             try {
                 byte[] bytes = file.getBytes();
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(fileName)));
+                stream = new BufferedOutputStream(new FileOutputStream(new File(fileName)));
                 stream.write(bytes);
                 stream.close();
             } catch (Exception e) {
                 LOGGER.error("Cat not upload a {}", fileName, e);
+            }finally {
+                try {
+                    if (stream != null) {
+                        stream.close();
+                    }
+                } catch (IOException e) {
+                    LOGGER.error("Stream closing error", e);
+                }
             }
         } else {
             LOGGER.error("Cat not upload a {}" + fileName + " because of empty file");
@@ -89,11 +98,12 @@ public class StorageServiceImpl implements StorageService {
         LOGGER.info("User path location directory {}", usersPathLocation);
         String[] files = FileUtils.getFile(new File(usersPathLocation)).exists() ? FileUtils.getFile(new File(usersPathLocation)).list() : new String[]{"image.jpeg"};
         File imageFile = null;
-        for (String file : files) {
+        for (String file : files != null ? files : new String[0]) {
             imageFile = FileUtils.getFile(new File(usersPathLocation), file);
         }
-        LOGGER.info("User file {} in  directory {}", imageFile.getName(), usersPathLocation);
-        return imageFile.toPath();
+        String imageFileName = null != imageFile ? imageFile.getName() : "empty-file-name";
+        LOGGER.info("User file {} in  directory {}", imageFileName, usersPathLocation);
+        return imageFile != null ? imageFile.toPath() : null;
     }
 
     @Override

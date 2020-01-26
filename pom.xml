@@ -52,6 +52,9 @@
         <slf4j.version>1.7.25</slf4j.version>
         <jasyp.version>1.7</jasyp.version>
         <spring-kafka.version>2.3.3.RELEASE</spring-kafka.version>
+
+        <!-- Other 3rd party dependencies -->
+        <swagger.version>1.5.24</swagger.version>
     </properties>
 
     <profiles>
@@ -448,6 +451,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
 
     </dependencies>

@@ -16,15 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-public class IndividualController extends AbstractController {
+public class IndividualController extends AbstractController implements Individual  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndividualController.class);
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/info", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("authenticated")
+    @Override
     public Response userPasswordUpdate(@RequestParam(name = "id") Long userId) throws ExecutionException, InterruptedException {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
@@ -34,11 +33,7 @@ public class IndividualController extends AbstractController {
         return getResponseDto(userDTO);
     }
 
-    @RequestMapping(value = "/password",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @PreAuthorize("authenticated")
+    @Override
     public Response userPasswordUpdate(@RequestBody UserDTO userDTO) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();

@@ -1,5 +1,5 @@
 package com.botmasterzzz.individual.common.constant;
 
 public final class Constants {
-    public static final String USER_ID = "userid";
+    public static final String USER_ID = "id";  //todo need change
 }

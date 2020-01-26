@@ -24,7 +24,7 @@ public class IndividualController extends AbstractController implements Individu
     private UserService userService;
 
     @Override
-    public Response userPasswordUpdate(@RequestParam(name = "id") Long userId) throws ExecutionException, InterruptedException {
+    public Response userPasswordUpdate(Long userId) throws ExecutionException, InterruptedException {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
         LOGGER.info("User info invoking request came from login: {} and id: {}", userPrincipal.getLogin(), userPrincipal.getId());
@@ -34,7 +34,7 @@ public class IndividualController extends AbstractController implements Individu
     }
 
     @Override
-    public Response userPasswordUpdate(@RequestBody UserDTO userDTO) {
+    public Response userPasswordUpdate(UserDTO userDTO) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
         userDTO.setId(userPrincipal.getId());

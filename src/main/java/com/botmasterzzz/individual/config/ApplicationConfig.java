@@ -1,5 +1,9 @@
 package com.botmasterzzz.individual.config;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;
 import org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer;
@@ -15,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.io.IOException;
 import java.util.concurrent.Executor;
 
 @ComponentScan("com.botmasterzzz.individual")
@@ -64,6 +69,21 @@ public class ApplicationConfig {
         environmentStringPBEConfig.setAlgorithm("PBEWithMD5AndDES");
         environmentStringPBEConfig.setPassword("710713748");
         return environmentStringPBEConfig;
+    }
+
+    @Bean
+    public JsonDeserializer jsonDeserializer() {
+        return new JsonDeserializer() {
+            @Override
+            public Object deserialize(JsonParser p, DeserializationContext context) throws IOException {
+                return null;
+            }
+        };
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
 }

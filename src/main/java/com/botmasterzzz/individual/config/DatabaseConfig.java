@@ -12,7 +12,7 @@ import java.util.Properties;
 @ComponentScan("com.botmasterzzz.individual")
 public class DatabaseConfig {
 
-    private static final String PROPERTY_NAME_ENTITY_LOCATION = "com.botmasterzzz.individual.model";
+    private static final String PROPERTY_NAME_ENTITY_LOCATION = "com.botmasterzzz.individual.entity";
 
     @Value("${app.db.worker.driver}")
     private String driver;

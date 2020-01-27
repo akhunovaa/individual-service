@@ -8,15 +8,13 @@ import com.botmasterzzz.individual.model.Response;
 import com.botmasterzzz.individual.service.ImageValidatorService;
 import com.botmasterzzz.individual.service.StorageService;
 import com.botmasterzzz.individual.service.UserService;
-import com.botmasterzzz.individual.util.ImageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -29,7 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RestController
-public class IndividualResourceController extends AbstractController {
+public class IndividualResourceController extends AbstractController implements IndividualResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndividualResourceController.class);
 
@@ -42,8 +40,7 @@ public class IndividualResourceController extends AbstractController {
     @Autowired
     private ImageValidatorService imageValidatorService;
 
-    @RequestMapping(value = "/image/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> userImageGet(@PathVariable int userId) {
+    public ResponseEntity<byte[]> userImageGet(int userId) {
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<byte[]> responseEntity;
         Path imagePath = storageService.load((long) userId);
@@ -76,9 +73,7 @@ public class IndividualResourceController extends AbstractController {
         return responseEntity;
     }
 
-    @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
-    @PreAuthorize("authenticated")
-    public Response userImageUpload(@RequestParam("file") MultipartFile file) {
+    public Response userImageUpload(MultipartFile file) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
         String requestUrl = "https://yourapi.ru/individual";

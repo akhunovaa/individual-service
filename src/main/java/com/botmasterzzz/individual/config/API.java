@@ -12,6 +12,7 @@ import javax.ws.rs.ApplicationPath;
 public class API extends ResourceConfig {
 
     public static final String PARAM_USER = "A valid user object.";
+    public static final String PARAM_FILE = "A valid file object.";
     public static final String PARAM_USER_ID = "A valid user id.";
 
 

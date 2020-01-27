@@ -15,7 +15,7 @@ volume:
   name: local-repository
   mountPath: /home/repository
   claim:
-    name: local-repository-claim
+    name: file-repository-claim
 
 nameOverride: ""
 fullnameOverride: ""

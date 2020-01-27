@@ -41,6 +41,7 @@ securityContext: {}
 service:
   type: LoadBalancer
   port: 7000
+  targetPort: 7000
 
 ingress:
   enabled: false

@@ -7,7 +7,8 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
       name: http
+      targetPort: {{ .Values.service.targetPort }}
   externalIPs:
     - 10.0.0.6
   selector:
-    app: botmasterzzz-individual
+    app: {{ include "fullname" . }}

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: local-repository-claim
+  name: file-repository-claim
 spec:
-  storageClassName: local-repository
+  storageClassName: file-repository
   accessModes:
     - ReadWriteMany
   resources:

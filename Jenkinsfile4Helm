@@ -119,7 +119,7 @@ pipeline {
                     echo "Removing remote pre-build image: $registry:${currentBuild.previousBuild.getNumber()}"
                     sh "ssh root@$remoteHost docker rmi --force $registry:${currentBuild.previousBuild.getNumber()}"
                     echo "Installing via Helm an image: $registry via helm files from directory $remoteWorkSpace/$dockerImageName-$BUILD_NUMBER"
-                    sh "ssh root@$remoteHost helm upgrade --install $dockerImageName-$namespace4upgrade $remoteWorkSpace/$dockerImageName-$BUILD_NUMBER/$helmFilesDirectoryName --namespace $namespace4upgrade --set image.appVersion=$dockerImageTag --set service.port=$portForDeploy --set replicaCount=$replicaCount --set env=$namespace4upgrade --set volume.name$volumeName --set volume.claim.name$volumeClaimName"
+                    sh "ssh root@$remoteHost helm upgrade --install $dockerImageName-$namespace4upgrade $remoteWorkSpace/$dockerImageName-$BUILD_NUMBER/$helmFilesDirectoryName --namespace $namespace4upgrade --set image.appVersion=$dockerImageTag --set service.port=$portForDeploy --set replicaCount=$replicaCount --set env=$namespace4upgrade --set volume.name=$volumeName --set volume.claim.name=$volumeClaimName"
                 }
                 sh 'printenv'
             }

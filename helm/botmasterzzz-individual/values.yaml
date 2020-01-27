@@ -12,6 +12,7 @@ imagePullSecrets:
   - name: ourhubpwd
 
 volume:
+  path: /home/repository
   name: file-repository
   mountPath: /home/repository
   claim:

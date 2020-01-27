@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-repository-claim
+spec:
+  storageClassName: local-repository
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi

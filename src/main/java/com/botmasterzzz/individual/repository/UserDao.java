@@ -12,4 +12,6 @@ public interface UserDao {
 
     Boolean existsByEmail(String email);
 
+    void userUpdate(User user);
+
 }

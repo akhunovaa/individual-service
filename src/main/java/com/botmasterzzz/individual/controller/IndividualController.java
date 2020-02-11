@@ -1,5 +1,6 @@
 package com.botmasterzzz.individual.controller;
 
+import com.botmasterzzz.individual.dto.PasswordDTO;
 import com.botmasterzzz.individual.dto.UserDTO;
 import com.botmasterzzz.individual.dto.UserPrincipal;
 import com.botmasterzzz.individual.model.Response;
@@ -34,18 +35,19 @@ public class IndividualController extends AbstractController {
         return getResponseDto(userDTO);
     }
 
+    @SuppressWarnings("deprecation")
     @RequestMapping(value = "/password",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize("authenticated")
-    public Response userPasswordUpdate(@RequestBody UserDTO userDTO) {
+    public Response userPasswordUpdate(@RequestBody PasswordDTO passwordDTO) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
-        userDTO.setId(userPrincipal.getId());
-        userService.userPasswordUpdate(userDTO);
-        LOGGER.info("User password was updated to login: {}", userDTO.getLogin());
-        return getResponseDto(userDTO);
+        passwordDTO.setId(userPrincipal.getId());
+        userService.userPasswordUpdate(passwordDTO);
+        LOGGER.info("User password was updated to login: {}", userPrincipal.getLogin());
+        return getResponseDto(passwordDTO);
     }
 
 

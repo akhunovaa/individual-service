@@ -1,8 +1,10 @@
 package com.botmasterzzz.individual.service.impl;
 
 import com.botmasterzzz.individual.dto.AbstractDto;
+import com.botmasterzzz.individual.dto.PasswordDTO;
 import com.botmasterzzz.individual.dto.UserDTO;
 import com.botmasterzzz.individual.entity.User;
+import com.botmasterzzz.individual.exception.InvalidPasswordException;
 import com.botmasterzzz.individual.repository.UserDao;
 import com.botmasterzzz.individual.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,6 +36,9 @@ public class UserServiceImpl implements UserService {
     private String userPasswordTopicName;
     @Value(value = "${user.data.topic.name}")
     private String userDataTopicName;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO save(UserDTO userDTO) {
@@ -57,6 +63,18 @@ public class UserServiceImpl implements UserService {
     public void userPasswordUpdate(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
         kafkaTemplate.send(userPasswordTopicName, userDTO);
+    }
+
+    @Override
+    public void userPasswordUpdate(PasswordDTO passwordDTO) {
+        Long userId = passwordDTO.getId();
+        User user = userDao.findById(passwordDTO.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
+        if (!passwordEncoder.matches(passwordDTO.getPasswordVerifier(), user.getPassword())) {
+            throw new InvalidPasswordException("Введенный  пароль неверен");
+        }
+        LOGGER.info("<= sending {}", writeValueAsString(passwordDTO));
+        user.setPassword(passwordEncoder.encode(passwordDTO.getPassword()));
+        userDao.userUpdate(user);
     }
 
     @Override
@@ -90,6 +108,14 @@ public class UserServiceImpl implements UserService {
             return objectMapper.writeValueAsString(userDTO);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Writing value to JSON failed: " + userDTO.toString());
+        }
+    }
+
+    private String writeValueAsString(PasswordDTO passwordDTO) {
+        try {
+            return objectMapper.writeValueAsString(passwordDTO);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Writing value to JSON failed: " + passwordDTO.toString());
         }
     }
 }

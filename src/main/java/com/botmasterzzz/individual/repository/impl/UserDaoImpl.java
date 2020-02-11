@@ -7,6 +7,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -76,5 +77,15 @@ public class UserDaoImpl implements UserDao {
             session.close();
         }
         return exists;
+    }
+
+    @Async
+    @Override
+    public void userUpdate(User user) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.update(user);
+        session.getTransaction().commit();
+        session.close();
     }
 }

@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public void userPasswordUpdate(PasswordDTO passwordDTO) {
         Long userId = passwordDTO.getId();
         User user = userDao.findById(passwordDTO.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
-        if (!passwordEncoder.matches(passwordDTO.getPasswordVerifier(), user.getPassword())) {
+        if (!passwordEncoder.matches(passwordDTO.getPasswordMain(), user.getPassword())) {
             throw new InvalidPasswordException("Введенный  пароль неверен");
         }
         LOGGER.info("<= sending {}", writeValueAsString(passwordDTO));

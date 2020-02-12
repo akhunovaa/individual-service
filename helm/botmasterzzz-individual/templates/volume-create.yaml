@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.volume.name }}
 spec:
   capacity:
-    storage: 3Gi
+    storage: 10Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
@@ -12,15 +12,4 @@ spec:
   storageClassName: {{ .Values.volume.name }}
   local:
     path: {{ .Values.volume.path }}
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - master
-                - node-1
-                - node-2
-                - node-3
 ---

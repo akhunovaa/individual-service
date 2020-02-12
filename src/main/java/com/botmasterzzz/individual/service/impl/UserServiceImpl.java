@@ -55,7 +55,12 @@ public class UserServiceImpl implements UserService {
     @Async
     public void userPictureUrlUpdate(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
-        //kafkaTemplate.send(userTopicName, userDTO);
+        Long userId = userDTO.getId();
+        User user = userDao.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
+        LOGGER.info("Request for a picture update to user: {}", writeValueAsString(user));
+        LOGGER.info("<= sending {}", writeValueAsString(userDTO));
+        user.setImageUrl(userDTO.getImageUrl());
+        userDao.userUpdate(user);
     }
 
     @Override

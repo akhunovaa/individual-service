@@ -7,6 +7,7 @@ replicaCount: 2
 image:
   repository: rusberbank.ru/botmasterzzz-individual
   pullPolicy: IfNotPresent
+  appVersion: 38
 
 imagePullSecrets:
   - name: ourhubpwd

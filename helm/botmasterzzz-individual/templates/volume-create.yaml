@@ -12,4 +12,12 @@ spec:
   storageClassName: {{ .Values.volume.name }}
   local:
     path: {{ .Values.volume.path }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - master
 ---

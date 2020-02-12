@@ -69,7 +69,9 @@ public class UserServiceImpl implements UserService {
     public void userPasswordUpdate(PasswordDTO passwordDTO) {
         Long userId = passwordDTO.getId();
         User user = userDao.findById(passwordDTO.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
+        LOGGER.info("Request for a password update to user: {}", writeValueAsString(user));
         if (!passwordEncoder.matches(passwordDTO.getPasswordMain(), user.getPassword())) {
+            LOGGER.error("Requested password {} is not valid for a user: {}", passwordDTO, writeValueAsString(user));
             throw new InvalidPasswordException("Введенный  пароль неверен");
         }
         LOGGER.info("<= sending {}", writeValueAsString(passwordDTO));
@@ -116,6 +118,14 @@ public class UserServiceImpl implements UserService {
             return objectMapper.writeValueAsString(passwordDTO);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Writing value to JSON failed: " + passwordDTO.toString());
+        }
+    }
+
+    private String writeValueAsString(User user) {
+        try {
+            return objectMapper.writeValueAsString(user);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Writing value to JSON failed: " + user.toString());
         }
     }
 }

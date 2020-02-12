@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
@@ -40,7 +39,6 @@ public class User {
     @Column(name = "note")
     private String note;
 
-    @Email
     @Column(name = "email")
     private String email;
 
@@ -186,5 +184,26 @@ public class User {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", patrName='" + patrName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", note='" + note + '\'' +
+                ", email='" + email + '\'' +
+                ", emailVerified=" + emailVerified +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", userRole=" + userRole +
+                ", provider=" + provider +
+                ", audWhenCreate=" + audWhenCreate +
+                ", audWhenUpdate=" + audWhenUpdate +
+                '}';
     }
 }

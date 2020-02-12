@@ -46,7 +46,7 @@ public class IndividualController extends AbstractController {
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
         passwordDTO.setId(userPrincipal.getId());
         userService.userPasswordUpdate(passwordDTO);
-        LOGGER.info("User password was updated to login: {}", userPrincipal.getLogin());
+        LOGGER.info("User password was updated to user id: {}", userPrincipal.getId());
         return getResponseDto(passwordDTO);
     }
 

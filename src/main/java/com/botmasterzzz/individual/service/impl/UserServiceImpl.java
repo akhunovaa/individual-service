@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         User user = userDao.findById(passwordDTO.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
         LOGGER.info("Request for a password update to user: {}", writeValueAsString(user));
         if (!passwordEncoder.matches(passwordDTO.getPasswordMain(), user.getPassword())) {
-            LOGGER.error("Requested password {} is not valid for a user: {}", passwordDTO, writeValueAsString(user));
+            LOGGER.error("Requested password {} is not valid for a user: {}", passwordDTO.getPasswordMain(), writeValueAsString(user));
             throw new InvalidPasswordException("Введенный  пароль неверен");
         }
         LOGGER.info("<= sending {}", writeValueAsString(passwordDTO));

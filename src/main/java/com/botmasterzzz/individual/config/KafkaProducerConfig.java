@@ -15,25 +15,25 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
+//@Configuration
 public class KafkaProducerConfig {
 
-    @Value("${kafka.server}")
-    private String kafkaServer;
-
-    @Bean
-    public ProducerFactory<Long, AbstractDto> producerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
-    }
-
-    @Bean
-    public KafkaTemplate<Long, AbstractDto> kafkaTemplate() {
-        KafkaTemplate<Long, AbstractDto> template = new KafkaTemplate<>(producerFactory());
-        template.setMessageConverter(new StringJsonMessageConverter());
-        return template;
-    }
+//    @Value("${kafka.server}")
+//    private String kafkaServer;
+//
+//    @Bean
+//    public ProducerFactory<Long, AbstractDto> producerFactory() {
+//        Map<String, Object> configProps = new HashMap<>();
+//        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
+//        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
+//        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+//        return new DefaultKafkaProducerFactory<>(configProps);
+//    }
+//
+//    @Bean
+//    public KafkaTemplate<Long, AbstractDto> kafkaTemplate() {
+//        KafkaTemplate<Long, AbstractDto> template = new KafkaTemplate<>(producerFactory());
+//        template.setMessageConverter(new StringJsonMessageConverter());
+//        return template;
+//    }
 }

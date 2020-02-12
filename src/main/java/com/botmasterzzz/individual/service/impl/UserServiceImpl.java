@@ -23,9 +23,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-
-    @Autowired
-    private KafkaTemplate<Long, AbstractDto> kafkaTemplate;
+//
+//    @Autowired
+//    private KafkaTemplate<Long, AbstractDto> kafkaTemplate;
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -55,14 +55,14 @@ public class UserServiceImpl implements UserService {
     @Async
     public void userPictureUrlUpdate(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
-        kafkaTemplate.send(userTopicName, userDTO);
+        //kafkaTemplate.send(userTopicName, userDTO);
     }
 
     @Override
     @Async
     public void userPasswordUpdate(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
-        kafkaTemplate.send(userPasswordTopicName, userDTO);
+        //kafkaTemplate.send(userPasswordTopicName, userDTO);
     }
 
     @Override

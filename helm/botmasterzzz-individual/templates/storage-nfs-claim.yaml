@@ -5,7 +5,7 @@ metadata:
 spec:
   storageClassName: {{ .Values.volume.name }}
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 3Gi
+      storage: 10Gi

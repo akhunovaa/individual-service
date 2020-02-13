@@ -145,13 +145,13 @@ def get_volume() {
     def stend = "${env.UPGRADE_NAMESPACE}"
     switch (stend) {
         case 'dev':
-            return 'file-repository-dev'
+            return 'yourapi-nfs-dev'
         case 'master':
-            return 'file-repository-master'
+            return 'yourapi-nfs-master'
         case 'prom':
-            return 'file-repository-prom'
+            return 'yourapi-nfs-prom'
         default:
-            return 'file-repository-dev'
+            return 'yourapi-nfs-dev'
     }
 }
 

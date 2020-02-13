@@ -21,12 +21,12 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.appVersion }}"
         volumeMounts:
           - mountPath: {{ .Values.volume.mountPath }}
-            name: {{ .Values.volume.name }}
+            name: host-volume
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - name: http
           containerPort: {{ .Values.service.port }}
       volumes:
-        - name: {{ .Values.volume.name }}
+        - name: host-volume
           persistentVolumeClaim:
-            claimName: {{ .Values.volume.claim.name }}
+            claimName: pvc1

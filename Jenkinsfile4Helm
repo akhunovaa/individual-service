@@ -159,12 +159,12 @@ def get_claim_volume() {
     def stend = "${env.UPGRADE_NAMESPACE}"
     switch (stend) {
         case 'dev':
-            return 'file-repository-claim-dev'
+            return 'yourapi-nfs-repository-claim-dev'
         case 'master':
-            return 'file-repository-claim-master'
+            return 'yourapi-nfs-repository-claim-master'
         case 'prom':
-            return 'file-repository-claim-prom'
+            return 'yourapi-nfs-repository-claim-prom'
         default:
-            return 'file-repository-claim-dev'
+            return 'yourapi-nfs-repository-claim-dev'
     }
 }

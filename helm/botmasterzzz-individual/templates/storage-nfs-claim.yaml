@@ -1,11 +1,11 @@
 kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: {{ .Values.volume.claim.name }}
-spec:
-  storageClassName: {{ .Values.volume.name }}
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Gi
+  apiVersion: v1
+  metadata:
+    name: {{ .Values.volume.claim.name }}
+  spec:
+    storageClassName: "{{ .Values.volume.storageClassName }}"
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi

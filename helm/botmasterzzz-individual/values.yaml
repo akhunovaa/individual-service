@@ -16,6 +16,7 @@ volume:
   path: /home/repository
   name: yourapi-nfs-dev
   mountPath: /home/repository
+  storageClassName: nfs-repository-dev
   claim:
     name: yourapi-nfs-repository-claim
   nfs:

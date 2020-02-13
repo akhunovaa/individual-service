@@ -14,10 +14,10 @@ imagePullSecrets:
 
 volume:
   path: /home/repository
-  name: file-repository
+  name: yourapi-nfs-dev
   mountPath: /home/repository
   claim:
-    name: file-repository-claim
+    name: yourapi-nfs-repository-claim
 
 nameOverride: ""
 fullnameOverride: ""

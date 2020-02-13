@@ -18,6 +18,9 @@ volume:
   mountPath: /home/repository
   claim:
     name: yourapi-nfs-repository-claim
+  nfs:
+    path: /home/repository
+    server: 10.107.255.41
 
 nameOverride: ""
 fullnameOverride: ""

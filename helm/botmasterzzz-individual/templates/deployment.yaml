@@ -28,5 +28,8 @@ spec:
           containerPort: {{ .Values.service.port }}
       volumes:
         - name: {{ .Values.volume.name }}
+          nfs:
+            path: {{ .Values.volume.nfs.path }}
+            server: {{ .Values.volume.nfs.server }}
           persistentVolumeClaim:
             claimName: {{ .Values.volume.claim.name }}

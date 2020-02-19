@@ -100,15 +100,16 @@ public class StorageServiceImpl implements StorageService {
                 headers.setContentType(MediaType.IMAGE_JPEG);
         }
         BufferedImage img;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
+        byte[] imageBytes = new byte[0];
+        try(ByteArrayOutputStream bos = new ByteArrayOutputStream()){
             img = ImageIO.read(new FileInputStream(image));
 //            BufferedImage resized = ImageUtil.resize(img, 300, 300);
             ImageIO.write(img, "jpg", bos);
-        } catch (IOException e) {
+            imageBytes = bos.toByteArray();
+        }catch (IOException e) {
             LOGGER.error("Error occurs during writing {} to {}", image.getName(), image.getAbsolutePath(), e);
         }
-        return new byte[0];
+        return imageBytes;
     }
 
     @Override

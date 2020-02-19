@@ -1,8 +1,10 @@
 package com.botmasterzzz.individual.model;
 
 import com.botmasterzzz.individual.exception.CustomException;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response {
 
     protected static final String TEXTAREA_TMP = "<textarea>{success:%b,message:'%s'}</textarea>";

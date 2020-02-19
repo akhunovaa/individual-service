@@ -8,14 +8,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -39,8 +41,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "image", key = "#userId")
-    public void storeMainImage(MultipartFile file, long userId) {
+    @CacheEvict(value = "bytesFromPersistentVolume", key = "#userId")
+    public void storeMainImage(MultipartFile file, Long userId) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;
         try {
@@ -86,12 +88,36 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @Cacheable(value = "bytesFromPersistentVolume", key = "#userId")
+    public byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId) {
+        MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
+        String mimeType = fileTypeMap.getContentType(image);
+        switch (mimeType) {
+            case "image/png":
+                headers.setContentType(MediaType.IMAGE_PNG);
+                break;
+            default:
+                headers.setContentType(MediaType.IMAGE_JPEG);
+        }
+        BufferedImage img;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            img = ImageIO.read(new FileInputStream(image));
+//            BufferedImage resized = ImageUtil.resize(img, 300, 300);
+            ImageIO.write(img, "jpg", bos);
+        } catch (IOException e) {
+            LOGGER.error("Error occurs during writing {} to {}", image.getName(), image.getAbsolutePath(), e);
+        }
+        return new byte[0];
+    }
+
+    @Override
     public Stream<Path> loadAll() {
         return null;
     }
 
     @Override
-    @Cacheable(value = "image", key = "#userId")
+    @Cacheable(value = "imagePath", key = "#userId")
     public Path load(long userId) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;

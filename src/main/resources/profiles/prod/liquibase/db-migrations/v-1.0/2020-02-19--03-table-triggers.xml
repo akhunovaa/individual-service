@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="14_35_pim_individual" failOnError="true" author="azat.akhunov@protonmail.com" runOnChange="true">
+        <sql>
+            DROP TRIGGER IF EXISTS pim_individual_aud_trigger ON pim_individual;
+            CREATE TRIGGER pim_individual_aud_trigger BEFORE INSERT OR UPDATE ON pim_individual FOR EACH ROW EXECUTE PROCEDURE
+            aud_trigger();
+        </sql>
+        <rollback>
+            DROP TRIGGER pim_individual_aud_trigger ON pim_individual;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

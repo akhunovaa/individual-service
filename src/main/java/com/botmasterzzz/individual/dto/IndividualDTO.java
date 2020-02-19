@@ -41,6 +41,8 @@ public class IndividualDTO extends AbstractDto {
     @Size(min = 3, max = 2000)
     private String info;
 
+    private String imageUrl;
+
     public String getName() {
         return name;
     }
@@ -121,6 +123,14 @@ public class IndividualDTO extends AbstractDto {
         this.info = info;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public String toString() {
         return "IndividualDTO{" +
@@ -134,6 +144,7 @@ public class IndividualDTO extends AbstractDto {
                 ", language='" + language + '\'' +
                 ", city='" + city + '\'' +
                 ", info='" + info + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }

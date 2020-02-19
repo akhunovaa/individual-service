@@ -4,6 +4,8 @@ import com.botmasterzzz.individual.exception.CustomException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Calendar;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response {
 
@@ -15,6 +17,8 @@ public class Response {
     private final String message;
     @JsonProperty
     private final Object response;
+    @JsonProperty
+    private final long time;
 
     public Response() {
         this(true, null, null);
@@ -32,6 +36,7 @@ public class Response {
         this.success = success;
         this.message = errorMessage;
         this.response = response;
+        this.time = Calendar.getInstance().getTimeInMillis();
     }
 
     public Boolean getSuccess() {

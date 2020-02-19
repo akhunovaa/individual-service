@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +40,6 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "bytesFromPersistentVolume", key = "#userId")
     public void storeMainImage(MultipartFile file, Long userId) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;
@@ -88,7 +86,6 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Cacheable(value = "bytesFromPersistentVolume", key = "#userId")
     public byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId) {
         MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
         String mimeType = fileTypeMap.getContentType(image);

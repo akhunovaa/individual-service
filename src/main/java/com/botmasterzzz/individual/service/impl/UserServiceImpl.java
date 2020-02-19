@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -130,9 +131,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Cacheable(value = "individual", key = "#id")
     public IndividualDTO findIndividual(Long id) {
-        Individual individual = userDao.findIndividualById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + id));
+        Optional<Individual> individualI = userDao.findIndividualById(id);
+        Individual individual = individualI.orElseGet(Individual::new);
         IndividualDTO individualDTO = new IndividualDTO();
         individualEntity2DTOMerge(individual, individualDTO);
+        individualDTO.setId(id);
         LOGGER.info("Individual was invoked: {}", writeValueAsString(individualDTO));
         return individualDTO;
     }
@@ -193,7 +196,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private void individualEntity2DTOMerge(Individual individual, IndividualDTO individualDTO){
-        individualDTO.setId(individual.getId());
         individualDTO.setName(individual.getName());
         individualDTO.setSurname(individual.getSurname());
         individualDTO.setPatrName(individual.getPatrName());

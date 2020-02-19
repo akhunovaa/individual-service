@@ -13,7 +13,13 @@
         timeToIdleSeconds="600" timeToLiveSeconds="1600" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
-    <cache name="image" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="10000" eternal="false" diskSpoolBufferSizeMB="50"
+
+    <cache name="bytesFromPersistentVolume" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="10000" eternal="false" diskSpoolBufferSizeMB="50"
+        timeToIdleSeconds="600" timeToLiveSeconds="1600" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
+        <persistence strategy="localTempSwap" />
+    </cache>
+
+    <cache name="imagePath" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="10000" eternal="false" diskSpoolBufferSizeMB="50"
         timeToIdleSeconds="600" timeToLiveSeconds="1600" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>

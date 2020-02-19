@@ -60,7 +60,7 @@ public class IndividualResourceController extends AbstractController {
     public Response userImageUpload(@RequestParam("file") MultipartFile file, HttpServletRequest httpServletRequest) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
-        String requestUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + "/individual";
+        String requestUrl = httpServletRequest.getScheme() + "s://" + httpServletRequest.getServerName() + "/individual";
         imageValidatorService.validate(file);
         storageService.storeMainImage(file, userPrincipal.getId());
         String imageUrl = requestUrl + "/image/" + userPrincipal.getId();

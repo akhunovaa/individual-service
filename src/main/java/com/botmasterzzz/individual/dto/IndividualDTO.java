@@ -11,34 +11,34 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IndividualDTO extends AbstractDto {
 
-    @Size(min = 3, max = 5000)
+    @Size(max = 5000)
     private String name;
 
-    @Size(min = 3, max = 5000)
+    @Size(max = 5000)
     private String surname;
 
-    @Size(min = 3, max = 5000)
+    @Size(max = 5000)
     private String patrName;
 
-    @Size(min = 3, max = 5000)
+    @Size(max = 5000)
     private String nickName;
 
-    @Size(min = 3, max = 100)
+    @Size(max = 100)
     private String phone;
 
     @JsonFormat(pattern="dd.MM.yyyy")
     private Date birthDate;
 
-    @Size(min = 3, max = 10)
+    @Size(max = 10)
     private String gender;
 
-    @Size(min = 3, max = 100)
+    @Size(max = 100)
     private String language;
 
-    @Size(min = 3, max = 100)
+    @Size(max = 100)
     private String city;
 
-    @Size(min = 3, max = 2000)
+    @Size(max = 2000)
     private String info;
 
     private String imageUrl;

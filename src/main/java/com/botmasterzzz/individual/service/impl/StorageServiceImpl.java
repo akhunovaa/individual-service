@@ -115,7 +115,6 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Cacheable(value = "imagePath", key = "#userId")
     public Path load(long userId) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;

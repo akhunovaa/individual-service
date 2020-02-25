@@ -58,7 +58,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Async
-    @CacheEvict(value = "user", key = "#userDTO.id")
     public void userPictureUrlUpdate(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
         Long userId = userDTO.getId();
@@ -92,7 +91,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(value = "individual", key = "#individualDTO.id")
     public void individualUpdate(IndividualDTO individualDTO) {
         Long userId = individualDTO.getId();
         LOGGER.info("Request for a user info update to user: {}", writeValueAsString(individualDTO));
@@ -108,7 +106,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = "user", key = "#id")
     public UserDTO findUser(Long id) {
         User user = userDao.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + id));
         LOGGER.info("=> consumed {}", user.getLogin());
@@ -130,7 +127,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = "individual", key = "#id")
     public IndividualDTO findIndividual(Long id) {
         Optional<Individual> individualI = userDao.findIndividualById(id);
         Individual individual = individualI.orElseGet(Individual::new);

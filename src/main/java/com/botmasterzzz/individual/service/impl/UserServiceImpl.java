@@ -62,10 +62,11 @@ public class UserServiceImpl implements UserService {
     public void userPictureUrlUpdate(UserDTO userDTO) {
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
         Long userId = userDTO.getId();
-        Individual individual = userDao.findIndividualById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
+        Individual individual = userDao.findIndividualById(userId).orElse(new Individual());
         LOGGER.info("Request for a picture update to user: {}", writeValueAsString(individual));
         LOGGER.info("<= sending {}", writeValueAsString(userDTO));
         individual.setImageUrl(userDTO.getImageUrl());
+        individual.setId(userId);
         userDao.individualUpdate(individual);
     }
 

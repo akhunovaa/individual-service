@@ -12,7 +12,7 @@ public interface StorageService {
 
     void init();
 
-    void storeMainImage(MultipartFile file, Long userId);
+    String storeMainImage(MultipartFile file, Long userId);
 
     byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId);
 

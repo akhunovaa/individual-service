@@ -62,7 +62,7 @@ public class IndividualResourceController extends AbstractController {
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
         String requestUrl = httpServletRequest.getScheme() + "s://" + httpServletRequest.getServerName() + "/individual";
         imageValidatorService.validate(file);
-        storageService.storeMainImage(file, userPrincipal.getId());
+        String uploadedImageAbsolutePath = storageService.storeMainImage(file, userPrincipal.getId());
         String imageUrl = requestUrl + "/image/" + userPrincipal.getId();
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(userPrincipal.getId());

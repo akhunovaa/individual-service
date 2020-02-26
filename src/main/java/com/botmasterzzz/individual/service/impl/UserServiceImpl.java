@@ -185,7 +185,9 @@ public class UserServiceImpl implements UserService {
         individual.setNickname(individualDTO.getNickName());
         individual.setPhone(individualDTO.getPhone());
         individual.setNickname(individualDTO.getNickName());
-        individual.setBirthDate(new Date(individualDTO.getBirthDate().getTime()));
+        if (null != individualDTO.getBirthDate()){
+            individual.setBirthDate(new Date(individualDTO.getBirthDate().getTime()));
+        }
         individual.setGender(individualDTO.getGender());
         individual.setLanguage(individualDTO.getLanguage());
         individual.setCity(individualDTO.getCity());

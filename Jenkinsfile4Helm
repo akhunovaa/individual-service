@@ -14,6 +14,7 @@ pipeline {
         portForDeploy = get_port()
         replicaCount = "${env.REPLICA_COUNT}"
         volumeName = get_volume()
+        profile4install = get_profile()
         volumeClaimName = get_claim_volume()
     }
 
@@ -30,7 +31,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Clean Build'
-                sh 'mvn clean compile -P dev'
+                sh "mvn clean compile -P $profile4install"
             }
         }
 
@@ -65,7 +66,7 @@ pipeline {
         stage('Package') {
             steps {
                 echo 'Packaging'
-                sh 'mvn clean package -P dev'
+                sh "mvn clean package -P $profile4install"
             }
         }
 
@@ -166,5 +167,19 @@ def get_claim_volume() {
             return 'yourapi-nfs-repository-claim-prom'
         default:
             return 'yourapi-nfs-repository-claim-dev'
+    }
+}
+
+def get_profile() {
+    def stend = "${env.UPGRADE_NAMESPACE}"
+    switch (stend) {
+        case 'dev':
+            return 'dev'
+        case 'master':
+            return 'master'
+        case 'prom':
+            return 'prod'
+        default:
+            return 'dev'
     }
 }

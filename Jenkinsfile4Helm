@@ -13,6 +13,9 @@ pipeline {
         dockerImageTag = "${env.DOCKER_IMAGE_TAG}"
         portForDeploy = get_port()
         replicaCount = "${env.REPLICA_COUNT}"
+        volumeName = get_volume()
+        profile4install = get_profile()
+        volumeClaimName = get_claim_volume()
     }
 
     agent any
@@ -28,7 +31,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Clean Build'
-                sh 'mvn clean compile -P dev'
+                sh "mvn clean compile -P $profile4install"
             }
         }
 
@@ -39,31 +42,31 @@ pipeline {
             }
         }
 
-        stage('SonarQube') {
-            environment {
-                scannerHome = tool 'botmasterzzz-sonar-scanner'
-            }
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-                script {
-                    timeout(time: 1, unit: 'HOURS') {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            echo "Status: ${qg.status}"
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                        }
-                    }
-                }
-            }
-        }
+//        stage('SonarQube') {
+//            environment {
+//                scannerHome = tool 'botmasterzzz-sonar-scanner'
+//            }
+//            steps {
+//                withSonarQubeEnv('SonarQube') {
+//                    sh "${scannerHome}/bin/sonar-scanner"
+//                }
+//                script {
+//                    timeout(time: 1, unit: 'HOURS') {
+//                        def qg = waitForQualityGate()
+//                        if (qg.status != 'OK') {
+//                            echo "Status: ${qg.status}"
+//                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
 
         stage('Package') {
             steps {
                 echo 'Packaging'
-                sh 'mvn clean package -P dev'
+                sh "mvn clean package -P $profile4install"
             }
         }
 
@@ -117,7 +120,7 @@ pipeline {
                     echo "Removing remote pre-build image: $registry:${currentBuild.previousBuild.getNumber()}"
                     sh "ssh root@$remoteHost docker rmi --force $registry:${currentBuild.previousBuild.getNumber()}"
                     echo "Installing via Helm an image: $registry via helm files from directory $remoteWorkSpace/$dockerImageName-$BUILD_NUMBER"
-                    sh "ssh root@$remoteHost helm upgrade --install $dockerImageName-$namespace4upgrade $remoteWorkSpace/$dockerImageName-$BUILD_NUMBER/$helmFilesDirectoryName --namespace $namespace4upgrade --set image.appVersion=$dockerImageTag --set service.port=$portForDeploy --set replicaCount=$replicaCount --set env=$namespace4upgrade"
+                    sh "ssh root@$remoteHost helm upgrade --install $dockerImageName-$namespace4upgrade $remoteWorkSpace/$dockerImageName-$BUILD_NUMBER/$helmFilesDirectoryName --namespace $namespace4upgrade --set image.appVersion=$dockerImageTag --set service.port=$portForDeploy --set replicaCount=$replicaCount --set env=$namespace4upgrade --set volume.name=$volumeName --set volume.claim.name=$volumeClaimName"
                 }
                 sh 'printenv'
             }
@@ -136,5 +139,47 @@ def get_port() {
             return '7002'
         default:
             return '7000'
+    }
+}
+
+def get_volume() {
+    def stend = "${env.UPGRADE_NAMESPACE}"
+    switch (stend) {
+        case 'dev':
+            return 'file-repository-dev'
+        case 'master':
+            return 'file-repository-master'
+        case 'prom':
+            return 'file-repository-prom'
+        default:
+            return 'file-repository-dev'
+    }
+}
+
+def get_claim_volume() {
+    def stend = "${env.UPGRADE_NAMESPACE}"
+    switch (stend) {
+        case 'dev':
+            return 'yourapi-nfs-repository-claim-dev'
+        case 'master':
+            return 'yourapi-nfs-repository-claim-master'
+        case 'prom':
+            return 'yourapi-nfs-repository-claim-prom'
+        default:
+            return 'yourapi-nfs-repository-claim-dev'
+    }
+}
+
+def get_profile() {
+    def stend = "${env.UPGRADE_NAMESPACE}"
+    switch (stend) {
+        case 'dev':
+            return 'dev'
+        case 'master':
+            return 'master'
+        case 'prom':
+            return 'prod'
+        default:
+            return 'dev'
     }
 }

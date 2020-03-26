@@ -88,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/ping", "/image/**")
+                .antMatchers("/ping", "/image/**", "/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

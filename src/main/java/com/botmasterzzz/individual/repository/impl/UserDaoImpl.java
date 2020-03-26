@@ -1,5 +1,6 @@
 package com.botmasterzzz.individual.repository.impl;
 
+import com.botmasterzzz.individual.entity.Individual;
 import com.botmasterzzz.individual.entity.User;
 import com.botmasterzzz.individual.repository.UserDao;
 import org.hibernate.*;
@@ -7,6 +8,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -38,6 +40,16 @@ public class UserDaoImpl implements UserDao {
         updateTransaction.commit();
         session.close();
         return Optional.ofNullable(user);
+    }
+
+    @Override
+    public Optional<Individual> findIndividualById(Long id) {
+        Session session = sessionFactory.openSession();
+        Transaction updateTransaction = session.beginTransaction();
+        Individual individual = session.get(Individual.class, id);
+        updateTransaction.commit();
+        session.close();
+        return Optional.ofNullable(individual);
     }
 
     @Override
@@ -76,5 +88,25 @@ public class UserDaoImpl implements UserDao {
             session.close();
         }
         return exists;
+    }
+
+    @Async
+    @Override
+    public void userUpdate(User user) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.update(user);
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    @Async
+    @Override
+    public void individualUpdate(Individual individual) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(individual);
+        session.getTransaction().commit();
+        session.close();
     }
 }

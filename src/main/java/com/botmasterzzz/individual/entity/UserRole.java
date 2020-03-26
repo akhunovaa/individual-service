@@ -2,6 +2,7 @@ package com.botmasterzzz.individual.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -81,5 +82,21 @@ public class UserRole {
 
     public void setAudWhenUpdate(Timestamp audWhenUpdate) {
         this.audWhenUpdate = audWhenUpdate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRole userRole = (UserRole) o;
+        return Objects.equal(id, userRole.id) &&
+                Objects.equal(roleName, userRole.roleName) &&
+                Objects.equal(username, userRole.username) &&
+                Objects.equal(note, userRole.note);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, roleName, username, note);
     }
 }

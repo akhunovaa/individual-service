@@ -7,15 +7,21 @@ replicaCount: 2
 image:
   repository: rusberbank.ru/botmasterzzz-individual
   pullPolicy: IfNotPresent
+  appVersion: 38
 
 imagePullSecrets:
   - name: ourhubpwd
 
 volume:
-  name: local-repository
+  path: /home/repository
+  name: yourapi-nfs-dev
   mountPath: /home/repository
+  storageClassName: nfs-repository-dev
   claim:
-    name: file-repository-claim
+    name: yourapi-nfs-repository-claim
+  nfs:
+    path: /home/repository
+    server: 10.107.255.41
 
 nameOverride: ""
 fullnameOverride: ""

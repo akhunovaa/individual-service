@@ -1,5 +1,7 @@
 package com.botmasterzzz.individual.service;
 
+import com.botmasterzzz.individual.dto.IndividualDTO;
+import com.botmasterzzz.individual.dto.PasswordDTO;
 import com.botmasterzzz.individual.dto.UserDTO;
 
 public interface UserService {
@@ -14,5 +16,11 @@ public interface UserService {
 
     void userPasswordUpdate(UserDTO userDTO);
 
+    void userPasswordUpdate(PasswordDTO passwordDTO);
+
+    void individualUpdate(IndividualDTO individualDTO);
+
     UserDTO findUser(Long id);
+
+    IndividualDTO findIndividual(Long id);
 }

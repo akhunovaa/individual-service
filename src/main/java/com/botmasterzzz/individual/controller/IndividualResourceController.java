@@ -8,7 +8,6 @@ import com.botmasterzzz.individual.model.Response;
 import com.botmasterzzz.individual.service.ImageValidatorService;
 import com.botmasterzzz.individual.service.StorageService;
 import com.botmasterzzz.individual.service.UserService;
-import com.botmasterzzz.individual.util.ImageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +18,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.activation.MimetypesFileTypeMap;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RestController
+@RequestMapping(value = "/image")
 public class IndividualResourceController extends AbstractController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndividualResourceController.class);
@@ -42,48 +37,32 @@ public class IndividualResourceController extends AbstractController {
     @Autowired
     private ImageValidatorService imageValidatorService;
 
-    @RequestMapping(value = "/image/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> userImageGet(@PathVariable int userId) {
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> userImageGet(@PathVariable String userId) {
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<byte[]> responseEntity;
-        Path imagePath = storageService.load((long) userId);
+        Long iUserId = Long.valueOf(userId);
+        Path imagePath = storageService.load(iUserId);
         if (Files.notExists(imagePath)) {
             LOGGER.info("File {} not found", imagePath.toString());
             throw new ImageNotFoundException("Данный файл отсутствует");
         }
         LOGGER.info("File path {} loaded", imagePath.toString());
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-        MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
-        String mimeType = fileTypeMap.getContentType(imagePath.toFile());
-        switch (mimeType) {
-            case "image/png":
-                headers.setContentType(MediaType.IMAGE_PNG);
-                break;
-            default:
-                headers.setContentType(MediaType.IMAGE_JPEG);
-        }
-        BufferedImage img;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            img = ImageIO.read(new FileInputStream(imagePath.toFile()));
-//            BufferedImage resized = ImageUtil.resize(img, 300, 300);
-            ImageIO.write(img, "jpg", bos);
-        } catch (IOException e) {
-            LOGGER.error("Error occurs during writing {}", imagePath.toString(), e);
-        }
-        byte[] media = bos.toByteArray();
+        headers.set("Requested-User", userId);
+        byte[] media = storageService.getByteArrayOfTheImage(imagePath.toFile(), headers, iUserId);
         responseEntity = new ResponseEntity<>(media, headers, HttpStatus.OK);
         return responseEntity;
     }
 
-    @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @PreAuthorize("authenticated")
-    public Response userImageUpload(@RequestParam("file") MultipartFile file) {
+    public Response userImageUpload(@RequestParam("file") MultipartFile file, HttpServletRequest httpServletRequest) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
-        String requestUrl = "https://yourapi.ru/individual";
+        String requestUrl = httpServletRequest.getScheme() + "s://" + httpServletRequest.getServerName() + "/individual";
         imageValidatorService.validate(file);
-        storageService.storeMainImage(file, userPrincipal.getId());
+        String uploadedImageAbsolutePath = storageService.storeMainImage(file, userPrincipal.getId());
         String imageUrl = requestUrl + "/image/" + userPrincipal.getId();
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(userPrincipal.getId());

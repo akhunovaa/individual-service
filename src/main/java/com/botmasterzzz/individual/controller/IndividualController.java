@@ -1,5 +1,7 @@
 package com.botmasterzzz.individual.controller;
 
+import com.botmasterzzz.individual.dto.IndividualDTO;
+import com.botmasterzzz.individual.dto.PasswordDTO;
 import com.botmasterzzz.individual.dto.UserDTO;
 import com.botmasterzzz.individual.dto.UserPrincipal;
 import com.botmasterzzz.individual.model.Response;
@@ -13,9 +15,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.ExecutionException;
+import javax.validation.Valid;
 
 @RestController
+@SuppressWarnings("deprecation")
 public class IndividualController extends AbstractController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndividualController.class);
@@ -23,9 +26,19 @@ public class IndividualController extends AbstractController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("authenticated")
+    @RequestMapping(value = "/me", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Response getCurrentUser() {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
+        long userId = userPrincipal.getId();
+        IndividualDTO individualDTO = userService.findIndividual(userId);
+        return getResponseDto(individualDTO);
+    }
+
     @RequestMapping(value = "/info", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("authenticated")
-    public Response userPasswordUpdate(@RequestParam(name = "id") Long userId) throws ExecutionException, InterruptedException {
+    public Response userInfo(@RequestParam(name = "id") Long userId) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
         LOGGER.info("User info invoking request came from login: {} and id: {}", userPrincipal.getLogin(), userPrincipal.getId());
@@ -39,14 +52,28 @@ public class IndividualController extends AbstractController {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize("authenticated")
-    public Response userPasswordUpdate(@RequestBody UserDTO userDTO) {
+    public Response userPasswordUpdate(@Valid @RequestBody PasswordDTO passwordDTO) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
-        userDTO.setId(userPrincipal.getId());
-        userService.userPasswordUpdate(userDTO);
-        LOGGER.info("User password was updated to login: {}", userDTO.getLogin());
-        return getResponseDto(userDTO);
+        passwordDTO.setId(userPrincipal.getId());
+        userService.userPasswordUpdate(passwordDTO);
+        LOGGER.info("User password was updated to user id: {}", userPrincipal.getId());
+        return getResponseDto(passwordDTO);
     }
 
+
+    @RequestMapping(value = "/update",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("authenticated")
+    public Response userInfoUpdate(@Valid @RequestBody IndividualDTO individualDTO) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
+        individualDTO.setId(userPrincipal.getId());
+        LOGGER.info("User information update to user id: {}", userPrincipal.getId());
+        userService.individualUpdate(individualDTO);
+        return getResponseDto(individualDTO);
+    }
 
 }

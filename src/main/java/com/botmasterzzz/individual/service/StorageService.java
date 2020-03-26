@@ -1,8 +1,10 @@
 package com.botmasterzzz.individual.service;
 
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -10,7 +12,9 @@ public interface StorageService {
 
     void init();
 
-    void storeMainImage(MultipartFile file, long userId);
+    String storeMainImage(MultipartFile file, Long userId);
+
+    byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId);
 
     Stream<Path> loadAll();
 

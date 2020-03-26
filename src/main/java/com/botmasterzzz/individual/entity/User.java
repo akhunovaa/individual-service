@@ -2,9 +2,9 @@ package com.botmasterzzz.individual.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
@@ -40,7 +40,6 @@ public class User {
     @Column(name = "note")
     private String note;
 
-    @Email
     @Column(name = "email")
     private String email;
 
@@ -186,5 +185,51 @@ public class User {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return emailVerified == user.emailVerified &&
+                Objects.equal(id, user.id) &&
+                Objects.equal(login, user.login) &&
+                Objects.equal(password, user.password) &&
+                Objects.equal(name, user.name) &&
+                Objects.equal(surname, user.surname) &&
+                Objects.equal(patrName, user.patrName) &&
+                Objects.equal(phone, user.phone) &&
+                Objects.equal(note, user.note) &&
+                Objects.equal(email, user.email) &&
+                Objects.equal(imageUrl, user.imageUrl) &&
+                Objects.equal(userRole, user.userRole) &&
+                provider == user.provider;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, login, password, name, surname, patrName, phone, note, email, emailVerified, imageUrl, userRole, provider);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", patrName='" + patrName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", note='" + note + '\'' +
+                ", email='" + email + '\'' +
+                ", emailVerified=" + emailVerified +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", userRole=" + userRole +
+                ", provider=" + provider +
+                ", audWhenCreate=" + audWhenCreate +
+                ", audWhenUpdate=" + audWhenUpdate +
+                '}';
     }
 }

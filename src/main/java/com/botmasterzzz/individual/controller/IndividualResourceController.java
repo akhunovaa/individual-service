@@ -37,7 +37,7 @@ public class IndividualResourceController extends AbstractController {
     @Autowired
     private ImageValidatorService imageValidatorService;
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{userId}/{width}/{height}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> userImageGet(@PathVariable String userId, @PathVariable String width, @PathVariable String height) {
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<byte[]> responseEntity;

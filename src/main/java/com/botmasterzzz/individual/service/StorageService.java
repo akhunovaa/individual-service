@@ -14,7 +14,7 @@ public interface StorageService {
 
     String storeMainImage(MultipartFile file, Long userId);
 
-    byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId);
+    byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId, int width, int height);
 
     Stream<Path> loadAll();
 

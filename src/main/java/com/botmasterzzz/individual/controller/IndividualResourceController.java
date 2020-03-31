@@ -38,7 +38,7 @@ public class IndividualResourceController extends AbstractController {
     private ImageValidatorService imageValidatorService;
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> userImageGet(@PathVariable String userId) {
+    public ResponseEntity<byte[]> userImageGet(@PathVariable String userId, @PathVariable String width, @PathVariable String height) {
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<byte[]> responseEntity;
         Long iUserId = Long.valueOf(userId);
@@ -50,7 +50,14 @@ public class IndividualResourceController extends AbstractController {
         LOGGER.info("File path {} loaded", imagePath.toString());
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         headers.set("Requested-User", userId);
-        byte[] media = storageService.getByteArrayOfTheImage(imagePath.toFile(), headers, iUserId);
+        int intWidth, intHeight;
+        try {
+            intWidth = Integer.parseInt(width);
+            intHeight = Integer.parseInt(height);
+        }catch (NumberFormatException exception){
+            throw new ImageNotFoundException("Image not found");
+        }
+        byte[] media = storageService.getByteArrayOfTheImage(imagePath.toFile(), headers, iUserId, intWidth, intHeight);
         responseEntity = new ResponseEntity<>(media, headers, HttpStatus.OK);
         return responseEntity;
     }

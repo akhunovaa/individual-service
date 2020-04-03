@@ -57,6 +57,9 @@ public class IndividualResourceController extends AbstractController {
         }catch (NumberFormatException exception){
             throw new ImageNotFoundException("Image not found");
         }
+        if (intWidth >= 2000 || intHeight >= 2000){
+            throw new ImageNotFoundException("Image not found");
+        }
         byte[] media = storageService.getByteArrayOfTheImage(imagePath.toFile(), headers, iUserId, intWidth, intHeight);
         responseEntity = new ResponseEntity<>(media, headers, HttpStatus.OK);
         return responseEntity;

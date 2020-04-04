@@ -3,6 +3,7 @@ package com.botmasterzzz.individual.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -42,6 +43,9 @@ public class IndividualDTO extends AbstractDto {
     private String info;
 
     private String imageUrl;
+
+    @Email
+    private String email;
 
     public String getName() {
         return name;
@@ -131,6 +135,14 @@ public class IndividualDTO extends AbstractDto {
         this.imageUrl = imageUrl;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "IndividualDTO{" +
@@ -145,6 +157,7 @@ public class IndividualDTO extends AbstractDto {
                 ", city='" + city + '\'' +
                 ", info='" + info + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

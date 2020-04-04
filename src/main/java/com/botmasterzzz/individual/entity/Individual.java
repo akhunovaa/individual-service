@@ -51,6 +51,10 @@ public class Individual {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private User user;
+
     @JsonIgnore
     @Column(name = "aud_when_create")
     private Timestamp audWhenCreate;
@@ -179,6 +183,14 @@ public class Individual {
         this.imageUrl = imageUrl;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -196,12 +208,13 @@ public class Individual {
                 Objects.equal(gender, that.gender) &&
                 Objects.equal(language, that.language) &&
                 Objects.equal(city, that.city) &&
-                Objects.equal(info, that.info);
+                Objects.equal(info, that.info) &&
+                Objects.equal(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, nickname, name, surname, patrName, imageUrl, phone, birthDate, gender, language, city, info, isDeleted);
+        return Objects.hashCode(id, nickname, name, surname, patrName, imageUrl, phone, birthDate, gender, language, city, info, isDeleted, user);
     }
 
     @Override
@@ -220,6 +233,7 @@ public class Individual {
                 ", city='" + city + '\'' +
                 ", info='" + info + '\'' +
                 ", isDeleted=" + isDeleted +
+                ", user=" + user +
                 ", audWhenCreate=" + audWhenCreate +
                 ", audWhenUpdate=" + audWhenUpdate +
                 '}';

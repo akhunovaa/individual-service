@@ -206,5 +206,6 @@ public class UserServiceImpl implements UserService {
         individualDTO.setCity(individual.getCity());
         individualDTO.setInfo(individual.getInfo());
         individualDTO.setImageUrl(individual.getImageUrl());
+        individualDTO.setEmail(individual.getUser().getEmail());
     }
 }

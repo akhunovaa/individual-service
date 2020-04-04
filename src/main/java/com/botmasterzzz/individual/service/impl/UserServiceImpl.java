@@ -95,7 +95,10 @@ public class UserServiceImpl implements UserService {
         Long userId = individualDTO.getId();
         LOGGER.info("Request for a user info update to user: {}", writeValueAsString(individualDTO));
         Individual individual = userDao.findIndividualById(userId).orElse(new Individual());
+        User user = userDao.findById(userId).orElse(new User());
         individualDTO2EntityMerge(individual, individualDTO);
+        user.setEmail(individualDTO.getEmail());
+        individual.setUser(user);
         LOGGER.info("<= sending {}", writeValueAsString(individual));
         userDao.individualUpdate(individual);
     }
@@ -178,6 +181,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private void individualDTO2EntityMerge(Individual individual, IndividualDTO individualDTO){
+        User user = new User();
+        user.setId(individualDTO.getId());
+        user.setEmail(individualDTO.getEmail());
         individual.setId(individualDTO.getId());
         individual.setName(individualDTO.getName());
         individual.setSurname(individualDTO.getSurname());
@@ -192,6 +198,7 @@ public class UserServiceImpl implements UserService {
         individual.setLanguage(individualDTO.getLanguage());
         individual.setCity(individualDTO.getCity());
         individual.setInfo(individualDTO.getInfo());
+        individual.setUser(user);
     }
 
     private void individualEntity2DTOMerge(Individual individual, IndividualDTO individualDTO){

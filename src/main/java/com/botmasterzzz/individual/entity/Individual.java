@@ -51,7 +51,7 @@ public class Individual {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private User user;
 

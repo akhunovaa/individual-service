@@ -105,7 +105,7 @@ public class UserDaoImpl implements UserDao {
     public void individualUpdate(Individual individual) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.saveOrUpdate(individual);
+        session.update(individual);
         session.getTransaction().commit();
         session.close();
     }

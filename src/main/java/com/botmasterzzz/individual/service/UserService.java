@@ -3,6 +3,7 @@ package com.botmasterzzz.individual.service;
 import com.botmasterzzz.individual.dto.IndividualDTO;
 import com.botmasterzzz.individual.dto.PasswordDTO;
 import com.botmasterzzz.individual.dto.UserDTO;
+import com.botmasterzzz.individual.dto.UserProfileDTO;
 
 public interface UserService {
 
@@ -23,4 +24,7 @@ public interface UserService {
     UserDTO findUser(Long id);
 
     IndividualDTO findIndividual(Long id);
+
+    UserProfileDTO findUserProfile(String nickname);
+
 }

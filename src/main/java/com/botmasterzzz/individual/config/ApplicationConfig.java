@@ -14,6 +14,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -27,6 +28,9 @@ import java.util.concurrent.Executor;
 @EnableWebMvc
 @Configuration
 public class ApplicationConfig {
+
+    private final static String PASSWORD_ALGORITHM = "PBEWithMD5AndDES";
+    private final static String DEFAULT_PASSWORD = "4071505";
 
     @Bean
     public RestOperations restTemplate() {
@@ -66,9 +70,30 @@ public class ApplicationConfig {
     @Bean
     public static EnvironmentStringPBEConfig environmentVariablesConfiguration() {
         EnvironmentStringPBEConfig environmentStringPBEConfig = new EnvironmentStringPBEConfig();
-        environmentStringPBEConfig.setAlgorithm("PBEWithMD5AndDES");
+        environmentStringPBEConfig.setAlgorithm(PASSWORD_ALGORITHM);
         environmentStringPBEConfig.setPassword("710713748");
         return environmentStringPBEConfig;
+    }
+
+    @Bean
+    public EnvironmentStringPBEConfig stringDataEncryptionConfig() {
+        EnvironmentStringPBEConfig environmentStringPBEConfig = new EnvironmentStringPBEConfig();
+        environmentStringPBEConfig.setAlgorithm(PASSWORD_ALGORITHM);
+        environmentStringPBEConfig.setPassword(DEFAULT_PASSWORD);
+        return environmentStringPBEConfig;
+    }
+
+    @Bean
+    @DependsOn("stringDataEncryptionConfig")
+    public StandardPBEStringEncryptor stringEncrypt() {
+        StandardPBEStringEncryptor encrypt = new StandardPBEStringEncryptor();
+        encrypt.setConfig(stringDataEncryptionConfig());
+        return encrypt;
+    }
+
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        return new MethodValidationPostProcessor();
     }
 
     @Bean

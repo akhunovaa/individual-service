@@ -3,18 +3,18 @@
 
     <diskStore path="java.io.tmpdir" />
 
-    <cache name="individual" maxEntriesLocalHeap="10000" maxEntriesLocalDisk="1000" eternal="false"
+    <cache name="individual" maxEntriesLocalHeap="10000" maxEntriesLocalDisk="2000" eternal="false"
         diskSpoolBufferSizeMB="50" timeToIdleSeconds="600" timeToLiveSeconds="1600" memoryStoreEvictionPolicy="LFU"
         transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
 
-    <cache name="user" maxEntriesLocalHeap="10000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="50"
+    <cache name="user" maxEntriesLocalHeap="10000" maxEntriesLocalDisk="2000" eternal="false" diskSpoolBufferSizeMB="50"
         timeToIdleSeconds="600" timeToLiveSeconds="1600" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
 
-    <cache name="bytesFromPersistentVolume" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="10000" eternal="false" diskSpoolBufferSizeMB="50"
+    <cache name="bytesFromPersistentVolume" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="5000" eternal="false" diskSpoolBufferSizeMB="50"
         timeToIdleSeconds="600" timeToLiveSeconds="1600" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
@@ -24,7 +24,13 @@
         <persistence strategy="localTempSwap" />
     </cache>
 
-    <cache name="user-info-data" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="1000" eternal="false"
+    <cache name="user-info-data" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="2000" eternal="false"
+        diskSpoolBufferSizeMB="100" timeToIdleSeconds="120" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU"
+        transactionalMode="off">
+        <persistence strategy="localTempSwap" />
+    </cache>
+
+    <cache name="user-application-secret" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="2000" eternal="false"
         diskSpoolBufferSizeMB="100" timeToIdleSeconds="120" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU"
         transactionalMode="off">
         <persistence strategy="localTempSwap" />

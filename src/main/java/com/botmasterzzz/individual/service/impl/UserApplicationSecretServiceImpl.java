@@ -12,6 +12,7 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,7 @@ public class UserApplicationSecretServiceImpl implements UserApplicationSecretSe
     }
 
     @Override
+    @Cacheable(value = "user-application-secret", key = "#userId + #limit")
     public List<UserApplicationSecretDTO> getUserApplicationSecretList(Long userId, int limit) {
         User user = userDao.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
         LOGGER.info("Request for a secret list for user: {}", writeValueAsString(user));

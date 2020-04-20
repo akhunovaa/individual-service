@@ -4,6 +4,7 @@ import com.botmasterzzz.individual.dto.UserApplicationSecretDTO;
 import com.botmasterzzz.individual.entity.User;
 import com.botmasterzzz.individual.entity.UserApplicationSecretEntity;
 import com.botmasterzzz.individual.exception.SecretKeyLimitCommitedException;
+import com.botmasterzzz.individual.exception.SecretKeyNotFoundException;
 import com.botmasterzzz.individual.repository.UserApplicationSecretDao;
 import com.botmasterzzz.individual.repository.UserDao;
 import com.botmasterzzz.individual.service.UserApplicationSecretService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserApplicationSecretServiceImpl implements UserApplicationSecretService {
@@ -60,6 +62,32 @@ public class UserApplicationSecretServiceImpl implements UserApplicationSecretSe
                 .setCreatedTimeStamp(new Date().getTime())
                 .setIsBanned(false)
                 .build();
+    }
+
+    @Override
+    public void updateUserApplicationSecret(Long userId, String secretName, String updateName) {
+        User user = userDao.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
+        LOGGER.info("Request for a secret update to user: {}", writeValueAsString(user));
+        Optional<UserApplicationSecretEntity> optionalUserApplicationSecretEntity = userApplicationSecretDao.userApplicationSecretGet(userId, secretName);
+        if (!optionalUserApplicationSecretEntity.isPresent()) {
+            throw new SecretKeyNotFoundException();
+        }
+        UserApplicationSecretEntity userApplicationSecretEntity = optionalUserApplicationSecretEntity.get();
+        userApplicationSecretEntity.setName(updateName);
+        userApplicationSecretDao.userApplicationSecretUpdate(userApplicationSecretEntity);
+    }
+
+    @Override
+    public void deleteUserApplicationSecret(Long userId, String secretName) {
+        User user = userDao.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
+        LOGGER.info("Request for a secret delete to user: {}", writeValueAsString(user));
+        Optional<UserApplicationSecretEntity> optionalUserApplicationSecretEntity = userApplicationSecretDao.userApplicationSecretGet(userId, secretName);
+        if (!optionalUserApplicationSecretEntity.isPresent()) {
+            throw new SecretKeyNotFoundException();
+        }
+        UserApplicationSecretEntity userApplicationSecretEntity = optionalUserApplicationSecretEntity.get();
+        userApplicationSecretEntity.setDeleted(true);
+        userApplicationSecretDao.userApplicationSecretUpdate(userApplicationSecretEntity);
     }
 
     //    @Cacheable(value = "user-application-secret", key = "#userId + #limit")

@@ -10,4 +10,8 @@ public interface UserApplicationSecretService {
 
     List<UserApplicationSecretDTO> getUserApplicationSecretList(Long userId, int limit);
 
+    void updateUserApplicationSecret(Long userId, String secretName, String updateName);
+
+    void deleteUserApplicationSecret(Long userId, String secretName);
+
 }

@@ -51,6 +51,30 @@ public class UserSecretController extends AbstractController {
     }
 
     @PreAuthorize("authenticated")
+    @RequestMapping(value = "/update", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response update(@RequestParam(name = "name") @Size(min = 3, max = 100) String name, @RequestParam(name = "updateName") @Size(min = 3, max = 100) String updateName) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
+        LOGGER.info("User secret update request came from login: {} and id: {}", userPrincipal.getLogin(), userPrincipal.getId());
+        userApplicationSecretService.updateUserApplicationSecret(userPrincipal.getId(), name, updateName);
+        List<UserApplicationSecretDTO> userApplicationSecretDTOList = userApplicationSecretService.getUserApplicationSecretList(userPrincipal.getId(), USER_APPLICATION_SECRET_KEY_LIMIT);
+        LOGGER.info("User secret update request done for login: {} and id: {} \nsecret_data: {}", userPrincipal.getLogin(), userPrincipal.getId(), userApplicationSecretDTOList);
+        return getResponseDto(userApplicationSecretDTOList);
+    }
+
+    @PreAuthorize("authenticated")
+    @RequestMapping(value = "/delete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response update(@RequestParam(name = "name") @Size(min = 3, max = 100) String name) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
+        LOGGER.info("User secret delete request came from login: {} and id: {}", userPrincipal.getLogin(), userPrincipal.getId());
+        userApplicationSecretService.deleteUserApplicationSecret(userPrincipal.getId(), name);
+        List<UserApplicationSecretDTO> userApplicationSecretDTOList = userApplicationSecretService.getUserApplicationSecretList(userPrincipal.getId(), USER_APPLICATION_SECRET_KEY_LIMIT);
+        LOGGER.info("User secret delete request done for login: {} and id: {} \nsecret_data: {}", userPrincipal.getLogin(), userPrincipal.getId(), userApplicationSecretDTOList);
+        return getResponseDto(userApplicationSecretDTOList);
+    }
+
+    @PreAuthorize("authenticated")
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Response list(@RequestParam(name = "limit", required = false) @Min(1) @Max(USER_APPLICATION_SECRET_KEY_LIMIT) Integer limit) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();

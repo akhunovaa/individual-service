@@ -3,6 +3,7 @@ package com.botmasterzzz.individual.service.impl;
 import com.botmasterzzz.individual.dto.UserApplicationSecretDTO;
 import com.botmasterzzz.individual.entity.User;
 import com.botmasterzzz.individual.entity.UserApplicationSecretEntity;
+import com.botmasterzzz.individual.exception.SecretKeyLimitCommitedException;
 import com.botmasterzzz.individual.repository.UserApplicationSecretDao;
 import com.botmasterzzz.individual.repository.UserDao;
 import com.botmasterzzz.individual.service.UserApplicationSecretService;
@@ -12,7 +13,6 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,8 @@ import java.util.List;
 public class UserApplicationSecretServiceImpl implements UserApplicationSecretService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserApplicationSecretService.class);
+
+    private static final int USER_APPLICATION_SECRET_KEY_LIMIT = 200;
 
     @Autowired
     private UserDao userDao;
@@ -48,6 +50,10 @@ public class UserApplicationSecretServiceImpl implements UserApplicationSecretSe
         userApplicationSecretEntity.setName(secretName);
         userApplicationSecretEntity.setPlainValue(data2Encrypt);
         userApplicationSecretEntity.setValue(secretText);
+        int size = userApplicationSecretDao.userApplicationSecretList(userId, USER_APPLICATION_SECRET_KEY_LIMIT).size();
+        if (size >= USER_APPLICATION_SECRET_KEY_LIMIT) {
+            throw new SecretKeyLimitCommitedException();
+        }
         userApplicationSecretDao.userApplicationSecretSave(userApplicationSecretEntity);
         return UserApplicationSecretDTO.newBuilder()
                 .setName(secretName)
@@ -56,8 +62,8 @@ public class UserApplicationSecretServiceImpl implements UserApplicationSecretSe
                 .build();
     }
 
+    //    @Cacheable(value = "user-application-secret", key = "#userId + #limit")
     @Override
-    @Cacheable(value = "user-application-secret", key = "#userId + #limit")
     public List<UserApplicationSecretDTO> getUserApplicationSecretList(Long userId, int limit) {
         User user = userDao.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + userId));
         LOGGER.info("Request for a secret list for user: {}", writeValueAsString(user));

@@ -31,27 +31,31 @@ public class UserSecretController extends AbstractController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserSecretController.class);
 
+    private static final int USER_APPLICATION_SECRET_KEY_LIMIT = 200;
+
     @Autowired
     private UserApplicationSecretService userApplicationSecretService;
 
     @PreAuthorize("authenticated")
     @RequestMapping(value = "/new", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response create(@RequestParam(name = "name", required = false) @Size(min = 3, max = 100) String name) {
+    public Response create(@RequestParam(name = "name", required = false) @Size(min = 3, max = 100) String name, @RequestParam(name = "limit", required = false) @Min(1) @Max(USER_APPLICATION_SECRET_KEY_LIMIT) Integer limit) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
+        int requestedLimit = null == limit ? USER_APPLICATION_SECRET_KEY_LIMIT : limit;
         String secretName = StringUtils.isEmpty(name) ? "default_name_" + new Date().getTime() : name;
         LOGGER.info("User secret create request came from login: {} and id: {}", userPrincipal.getLogin(), userPrincipal.getId());
-        UserApplicationSecretDTO userApplicationSecretDTO = userApplicationSecretService.createNewUserApplicationSecret(userPrincipal.getId(), secretName);
-        LOGGER.info("User secret create request done for login: {} and id: {} \nsecret_data: {}", userPrincipal.getLogin(), userPrincipal.getId(), userApplicationSecretDTO);
-        return getResponseDto(userApplicationSecretDTO);
+        userApplicationSecretService.createNewUserApplicationSecret(userPrincipal.getId(), secretName);
+        List<UserApplicationSecretDTO> userApplicationSecretDTOList = userApplicationSecretService.getUserApplicationSecretList(userPrincipal.getId(), requestedLimit);
+        LOGGER.info("User secret create request done for login: {} and id: {} \nsecret_data: {}", userPrincipal.getLogin(), userPrincipal.getId(), userApplicationSecretDTOList);
+        return getResponseDto(userApplicationSecretDTOList);
     }
 
     @PreAuthorize("authenticated")
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response list(@RequestParam(name = "limit", required = false) @Min(1) @Max(200) Integer limit) {
+    public Response list(@RequestParam(name = "limit", required = false) @Min(1) @Max(USER_APPLICATION_SECRET_KEY_LIMIT) Integer limit) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
-        int requestedLimit = null == limit ? 200 : limit;
+        int requestedLimit = null == limit ? USER_APPLICATION_SECRET_KEY_LIMIT : limit;
         LOGGER.info("User secret list request came from login: {} and id: {}", userPrincipal.getLogin(), userPrincipal.getId());
         List<UserApplicationSecretDTO> userApplicationSecretDTOList = userApplicationSecretService.getUserApplicationSecretList(userPrincipal.getId(), requestedLimit);
         LOGGER.info("User secret list request done for login: {} and id: {} \nsecret_data: {}", userPrincipal.getLogin(), userPrincipal.getId(), userApplicationSecretDTOList);

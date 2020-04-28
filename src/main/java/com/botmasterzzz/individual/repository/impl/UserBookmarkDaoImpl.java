@@ -71,6 +71,7 @@ public class UserBookmarkDaoImpl implements UserBookmarkDao {
         Session session = sessionFactory.openSession();
         Criteria criteria = session.createCriteria(UserBookmarkEntity.class);
         criteria.addOrder(Order.desc("audWhenUpdate"));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.eq("user.id", userId));
         criteria.setMaxResults(limit);
         userBookmarkEntityList = criteria.list();

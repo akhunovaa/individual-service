@@ -15,4 +15,15 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="15-10_user_bookmark" failOnError="true" author="azat.akhunov@protonmail.com" runOnChange="true">
+        <sql>
+            DROP TRIGGER IF EXISTS user_bookmark_aud_trigger ON user_bookmark;
+            CREATE TRIGGER user_bookmark_aud_trigger BEFORE INSERT OR UPDATE ON user_bookmark FOR EACH ROW EXECUTE PROCEDURE aud_trigger();
+        </sql>
+        <rollback>
+            DROP TRIGGER user_bookmark_aud_trigger ON user_bookmark;
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>

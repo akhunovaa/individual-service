@@ -22,4 +22,23 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="15_04_user_bookmark" failOnError="true" author="azat.akhunov@protonmail.com" runOnChange="true">
+        <createTable tableName="user_bookmark" schemaName="public">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="full_name" type="VARCHAR(500)"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_bookmark" referencedTableName="users" referencedColumnNames="id" />
+            </column>
+            <column name="note" type="VARCHAR(500)"/>
+            <column name="api_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_api_bookmark" referencedTableName="api_data" referencedColumnNames="id"/>
+            </column>
+            <column name="aud_when_create" type="TIMESTAMP"/>
+            <column name="aud_when_update" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

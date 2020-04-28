@@ -24,7 +24,6 @@ public class ApiDataDAOImpl implements ApiDataDao {
         ApiDataEntity apiDataEntity = null;
         Session session = sessionFactory.openSession();
         Criteria criteria = session.createCriteria(ApiDataEntity.class);
-        criteria.add(Restrictions.eq("userEntity.id", userId));
         criteria.add(Restrictions.eq("uuid", apiUuid));
         criteria.setMaxResults(1);
         try {

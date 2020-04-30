@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,10 @@ public class UserBookmarkServiceImpl implements UserBookmarkService {
     private ObjectMapper objectMapper;
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "user-api-data", key = "#userId"),
+            @CacheEvict(value = "user-bookmark-list", key = "#userId")
+    })
     public void createBookmark(Long userId, String apiUuid) {
         User user = userDao.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         ApiDataEntity apiDataEntity = apiDataDao.getApiData(userId, apiUuid).orElseThrow(() -> new ApiDataNotFoundException("API not found"));
@@ -59,6 +66,10 @@ public class UserBookmarkServiceImpl implements UserBookmarkService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "user-api-data", key = "#userId"),
+            @CacheEvict(value = "user-bookmark-list", key = "#userId")
+    })
     public void purgeBookmark(Long userId, String apiUuid) {
         User user = userDao.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         LOGGER.info("Request for a bookmark remove to user: {}", writeValueAsString(user));
@@ -71,6 +82,7 @@ public class UserBookmarkServiceImpl implements UserBookmarkService {
     }
 
     @Override
+    @Cacheable(value = "user-bookmark-list", key = "#userId")
     public List<BookmarkDTO> getUserBookmarkList(Long userId, int limit) {
         List<BookmarkDTO> bookmarkDTOList = new ArrayList<>();
 

@@ -71,6 +71,7 @@ public class IndividualController extends AbstractController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) usernamePasswordAuthenticationToken.getPrincipal();
         individualDTO.setId(userPrincipal.getId());
+        individualDTO.setLogin(userPrincipal.getLogin());
         LOGGER.info("User information update to user id: {}", userPrincipal.getId());
         userService.individualUpdate(individualDTO);
         return getResponseDto(individualDTO);

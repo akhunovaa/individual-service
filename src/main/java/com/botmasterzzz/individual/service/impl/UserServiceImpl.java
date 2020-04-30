@@ -15,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -91,6 +93,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "individual-data", key = "#individualDTO.id"),
+            @CacheEvict(value = "user-data", key = "#individualDTO.id"),
+            @CacheEvict(value = "user-info-data", key = "#individualDTO.login")
+    })
     public void individualUpdate(IndividualDTO individualDTO) {
         Long userId = individualDTO.getId();
         LOGGER.info("Request for a user info update to user: {}", writeValueAsString(individualDTO));
@@ -109,6 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user-data", key = "#id")
     public UserDTO findUser(Long id) {
         User user = userDao.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + id));
         LOGGER.info("=> consumed {}", user.getLogin());
@@ -130,6 +138,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "individual-data", key = "#id")
     public IndividualDTO findIndividual(Long id) {
         Optional<Individual> individualI = userDao.findIndividualById(id);
         Individual individual = individualI.orElseGet(Individual::new);

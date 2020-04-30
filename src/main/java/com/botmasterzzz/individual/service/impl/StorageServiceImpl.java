@@ -43,7 +43,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "user-picture", key = "#userId")
+//    @CacheEvict(value = "user-picture", key = "#userId")
     public String storeMainImage(MultipartFile file, Long userId) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;
@@ -84,7 +84,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Cacheable(value = "user-picture", key = "#userId")
+//    @Cacheable(value = "user-picture", key = "#userId")
     public byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId, int width, int height) {
         MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
         String mimeType = fileTypeMap.getContentType(image);

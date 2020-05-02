@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -43,8 +43,12 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-//    @CacheEvict(value = "user-picture", key = "#userId")
-    public String storeMainImage(MultipartFile file, Long userId) {
+    @Caching(evict = {
+            @CacheEvict(value = "individual-data", key = "#userId"),
+            @CacheEvict(value = "user-data", key = "#userId"),
+            @CacheEvict(value = "user-info-data", key = "#login")
+    })
+    public String storeMainImage(MultipartFile file, Long userId, String login) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;
         File fileX = new File(usersPathLocation);

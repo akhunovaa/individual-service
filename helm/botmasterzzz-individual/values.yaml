@@ -5,7 +5,7 @@
 replicaCount: 2
 
 image:
-  repository: rusberbank.ru/botmasterzzz-individual
+  repository: registry.yourapi.ru/botmasterzzz-individual
   pullPolicy: IfNotPresent
   appVersion: 38
 

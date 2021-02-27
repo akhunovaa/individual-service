@@ -16,9 +16,9 @@ volume:
   path: /home/repository
   name: yourapi-nfs-dev
   mountPath: /home/repository
-  storageClassName: nfs-repository-dev
+  storageClassName: managed-nfs-storage
   claim:
-    name: yourapi-nfs-repository-claim
+    name: pvc1
   nfs:
     path: /home/repository
     server: 10.107.255.41

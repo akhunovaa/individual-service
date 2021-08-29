@@ -30,7 +30,7 @@ import java.util.concurrent.Executor;
 public class ApplicationConfig {
 
     private final static String PASSWORD_ALGORITHM = "PBEWithMD5AndDES";
-    private final static String DEFAULT_PASSWORD = "4071505";
+    private final static String DEFAULT_PASSWORD = "111";
 
     @Bean
     public RestOperations restTemplate() {

@@ -11,6 +11,8 @@ public interface UserDao {
 
     Optional<Individual> findIndividualById(Long id);
 
+    Optional<Individual> findIndividualByNickName(String nickname);
+
     Boolean existsByLogin(String login);
 
     Boolean existsByEmail(String email);

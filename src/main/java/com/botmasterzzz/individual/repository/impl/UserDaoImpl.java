@@ -54,6 +54,23 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @SuppressWarnings("deprecation")
+    public Optional<Individual> findIndividualByNickName(String nickname) {
+        Individual individual = null;
+        Session session = sessionFactory.openSession();
+        Criteria criteria = session.createCriteria(Individual.class);
+        criteria.add(Restrictions.eq("nickname", nickname).ignoreCase());
+        try {
+            individual = (Individual) criteria.uniqueResult();
+        } catch (NonUniqueResultException e) {
+            session.close();
+        } finally {
+            session.close();
+        }
+        return Optional.ofNullable(individual);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
     public Boolean existsByLogin(String login) {
         Session session = sessionFactory.openSession();
         Criteria criteria = session.createCriteria(User.class);
@@ -105,7 +122,7 @@ public class UserDaoImpl implements UserDao {
     public void individualUpdate(Individual individual) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.saveOrUpdate(individual);
+        session.update(individual);
         session.getTransaction().commit();
         session.close();
     }

@@ -1,8 +1,10 @@
 package com.botmasterzzz.individual.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -10,6 +12,9 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IndividualDTO extends AbstractDto {
+
+    @JsonIgnore
+    private String login;
 
     @Size(max = 5000)
     private String name;
@@ -42,6 +47,9 @@ public class IndividualDTO extends AbstractDto {
     private String info;
 
     private String imageUrl;
+
+    @Email
+    private String email;
 
     public String getName() {
         return name;
@@ -131,10 +139,27 @@ public class IndividualDTO extends AbstractDto {
         this.imageUrl = imageUrl;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
     @Override
     public String toString() {
         return "IndividualDTO{" +
-                "name='" + name + '\'' +
+                "login='" + login + '\'' +
+                ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", patrName='" + patrName + '\'' +
                 ", nickName='" + nickName + '\'' +
@@ -145,6 +170,8 @@ public class IndividualDTO extends AbstractDto {
                 ", city='" + city + '\'' +
                 ", info='" + info + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", email='" + email + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

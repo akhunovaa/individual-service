@@ -1,10 +1,13 @@
 package com.botmasterzzz.individual.service.impl;
 
 import com.botmasterzzz.individual.service.StorageService;
+import com.botmasterzzz.individual.util.ImageUtil;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -40,7 +43,12 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public String storeMainImage(MultipartFile file, Long userId) {
+    @Caching(evict = {
+            @CacheEvict(value = "individual-data", key = "#userId"),
+            @CacheEvict(value = "user-data", key = "#userId"),
+            @CacheEvict(value = "user-info-data", key = "#login")
+    })
+    public String storeMainImage(MultipartFile file, Long userId, String login) {
         String fullPath = path + "/images";
         String usersPathLocation = fullPath + "/user/" + userId;
         File fileX = new File(usersPathLocation);
@@ -80,7 +88,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId) {
+//    @Cacheable(value = "user-picture", key = "#userId")
+    public byte[] getByteArrayOfTheImage(File image, HttpHeaders headers, Long userId, int width, int height) {
         MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
         String mimeType = fileTypeMap.getContentType(image);
         switch (mimeType) {
@@ -94,8 +103,8 @@ public class StorageServiceImpl implements StorageService {
         byte[] imageBytes = new byte[0];
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             img = ImageIO.read(new FileInputStream(image));
-//            BufferedImage resized = ImageUtil.resize(img, 300, 300);
-            ImageIO.write(img, "jpg", bos);
+             BufferedImage resized = ImageUtil.resize(img, height, width);
+             ImageIO.write(resized, "jpg", bos);
             imageBytes = bos.toByteArray();
         } catch (IOException e) {
             LOGGER.error("Error occurs during writing {} to {}", image.getName(), image.getAbsolutePath(), e);

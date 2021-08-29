@@ -3,6 +3,7 @@ package com.botmasterzzz.individual.service.impl;
 import com.botmasterzzz.individual.dto.IndividualDTO;
 import com.botmasterzzz.individual.dto.PasswordDTO;
 import com.botmasterzzz.individual.dto.UserDTO;
+import com.botmasterzzz.individual.dto.UserProfileDTO;
 import com.botmasterzzz.individual.entity.Individual;
 import com.botmasterzzz.individual.entity.User;
 import com.botmasterzzz.individual.exception.InvalidPasswordException;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +30,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-//
+    //
 //    @Autowired
 //    private KafkaTemplate<Long, AbstractDto> kafkaTemplate;
     @Autowired
@@ -91,11 +93,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "individual-data", key = "#individualDTO.id"),
+            @CacheEvict(value = "user-data", key = "#individualDTO.id"),
+            @CacheEvict(value = "user-info-data", key = "#individualDTO.login")
+    })
     public void individualUpdate(IndividualDTO individualDTO) {
         Long userId = individualDTO.getId();
         LOGGER.info("Request for a user info update to user: {}", writeValueAsString(individualDTO));
         Individual individual = userDao.findIndividualById(userId).orElse(new Individual());
+        User user = userDao.findById(userId).orElse(new User());
         individualDTO2EntityMerge(individual, individualDTO);
+        user.setEmail(individualDTO.getEmail());
+        individual.setUser(user);
         LOGGER.info("<= sending {}", writeValueAsString(individual));
         userDao.individualUpdate(individual);
     }
@@ -106,6 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user-data", key = "#id")
     public UserDTO findUser(Long id) {
         User user = userDao.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + id));
         LOGGER.info("=> consumed {}", user.getLogin());
@@ -127,6 +138,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "individual-data", key = "#id")
     public IndividualDTO findIndividual(Long id) {
         Optional<Individual> individualI = userDao.findIndividualById(id);
         Individual individual = individualI.orElseGet(Individual::new);
@@ -135,6 +147,33 @@ public class UserServiceImpl implements UserService {
         individualDTO.setId(id);
         LOGGER.info("Individual was invoked: {}", writeValueAsString(individualDTO));
         return individualDTO;
+    }
+
+    @Override
+    @Cacheable(value = "user-info-data", key = "#username")
+    public UserProfileDTO findUserProfile(String username){
+        Individual individual;
+        Optional<Individual> optionalIndividual = userDao.findIndividualByNickName(username);
+
+        if (optionalIndividual.isPresent()) {
+            individual = optionalIndividual.get();
+        } else {
+            if (!username.trim().toLowerCase().contains("id")) {
+                throw new UsernameNotFoundException("User " + username + " not found");
+            }
+            Long id;
+            try {
+                id = Long.parseLong(username.trim().toLowerCase().split("id")[1]);
+            } catch (NumberFormatException exception) {
+                throw new UsernameNotFoundException("User " + username + " not found");
+            }
+            individual = userDao.findIndividualById(id).orElseThrow(() -> new UsernameNotFoundException("User " + id + " not found"));
+        }
+        UserProfileDTO userProfileDTO = new UserProfileDTO();
+        individualEntity2DTOMerge(individual, userProfileDTO);
+        userProfileDTO.setId(individual.getId());
+        LOGGER.info("User was invoked: {}", writeValueAsString(userProfileDTO));
+        return userProfileDTO;
     }
 
     private String writeValueAsString(UserDTO userDTO) {
@@ -177,7 +216,18 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void individualDTO2EntityMerge(Individual individual, IndividualDTO individualDTO){
+    private String writeValueAsString(UserProfileDTO userProfileDTO) {
+        try {
+            return objectMapper.writeValueAsString(userProfileDTO);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Writing value to JSON failed: " + userProfileDTO.toString());
+        }
+    }
+
+    private void individualDTO2EntityMerge(Individual individual, IndividualDTO individualDTO) {
+        User user = new User();
+        user.setId(individualDTO.getId());
+        user.setEmail(individualDTO.getEmail());
         individual.setId(individualDTO.getId());
         individual.setName(individualDTO.getName());
         individual.setSurname(individualDTO.getSurname());
@@ -185,16 +235,17 @@ public class UserServiceImpl implements UserService {
         individual.setNickname(individualDTO.getNickName());
         individual.setPhone(individualDTO.getPhone());
         individual.setNickname(individualDTO.getNickName());
-        if (null != individualDTO.getBirthDate()){
+        if (null != individualDTO.getBirthDate()) {
             individual.setBirthDate(new Date(individualDTO.getBirthDate().getTime()));
         }
         individual.setGender(individualDTO.getGender());
         individual.setLanguage(individualDTO.getLanguage());
         individual.setCity(individualDTO.getCity());
         individual.setInfo(individualDTO.getInfo());
+        individual.setUser(user);
     }
 
-    private void individualEntity2DTOMerge(Individual individual, IndividualDTO individualDTO){
+    private void individualEntity2DTOMerge(Individual individual, IndividualDTO individualDTO) {
         individualDTO.setName(individual.getName());
         individualDTO.setSurname(individual.getSurname());
         individualDTO.setPatrName(individual.getPatrName());
@@ -206,5 +257,19 @@ public class UserServiceImpl implements UserService {
         individualDTO.setCity(individual.getCity());
         individualDTO.setInfo(individual.getInfo());
         individualDTO.setImageUrl(individual.getImageUrl());
+        individualDTO.setEmail(individual.getUser().getEmail());
+    }
+
+    private void individualEntity2DTOMerge(Individual individual, UserProfileDTO userProfileDTO) {
+        userProfileDTO.setName(individual.getName());
+        userProfileDTO.setSurname(individual.getSurname());
+        userProfileDTO.setPatrName(individual.getPatrName());
+        userProfileDTO.setNickName(individual.getNickname());
+        userProfileDTO.setBirthDate(individual.getBirthDate());
+        userProfileDTO.setGender(individual.getGender());
+        userProfileDTO.setLanguage(individual.getLanguage());
+        userProfileDTO.setCity(individual.getCity());
+        userProfileDTO.setInfo(individual.getInfo());
+        userProfileDTO.setImageUrl(individual.getImageUrl());
     }
 }

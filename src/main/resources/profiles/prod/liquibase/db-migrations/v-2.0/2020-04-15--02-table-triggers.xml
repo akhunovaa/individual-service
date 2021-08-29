@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="16-07_user_application_secret" failOnError="true" author="azat.akhunov@protonmail.com" runOnChange="true">
+        <sql>
+            DROP TRIGGER IF EXISTS user_application_secret_aud_trigger ON user_application_secret;
+            CREATE TRIGGER user_application_secret_aud_trigger BEFORE INSERT OR UPDATE ON user_application_secret FOR EACH ROW EXECUTE PROCEDURE
+            aud_trigger();
+        </sql>
+        <rollback>
+            DROP TRIGGER user_application_secret_aud_trigger ON user_application_secret;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15-10_user_bookmark" failOnError="true" author="azat.akhunov@protonmail.com" runOnChange="true">
+        <sql>
+            DROP TRIGGER IF EXISTS user_bookmark_aud_trigger ON user_bookmark;
+            CREATE TRIGGER user_bookmark_aud_trigger BEFORE INSERT OR UPDATE ON user_bookmark FOR EACH ROW EXECUTE PROCEDURE aud_trigger();
+        </sql>
+        <rollback>
+            DROP TRIGGER user_bookmark_aud_trigger ON user_bookmark;
+        </rollback>
+    </changeSet>
+
+
+</databaseChangeLog>
